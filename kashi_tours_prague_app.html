@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>מדריך פראג למשפחות - Kashi Tours</title>
+    
+    <!-- Tailwind CSS (לעיצוב) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (לתרגום הקוד בדפדפן) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        // --- Kashi Tours Logo Component (SVG) ---
+        const KashiLogo = () => (
+          <svg viewBox="0 0 400 160" className="h-16 w-auto" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="200" cy="70" r="45" fill="#FFE800" />
+            <path d="M 150 70 L 250 70 M 155 85 L 245 85" stroke="#FFF" strokeWidth="2" opacity="0.5" />
+            <path d="M 230 100 L 230 65 L 240 65 L 240 80 L 245 80 L 245 50 L 255 50 L 255 70 L 265 70 L 265 40 L 275 40 L 275 60 L 285 60 L 285 85 L 295 85 L 295 100 Z" fill="#2C231F" />
+            <path d="M 190 100 Q 180 60 150 40 Q 180 50 185 100" fill="#2C231F" />
+            <path d="M 150 40 Q 160 30 180 35 Q 150 20 130 30 Q 140 40 150 40" fill="#2C231F" />
+            <path d="M 150 40 Q 130 50 120 70 Q 140 60 150 40" fill="#2C231F" />
+            <path d="M 150 40 Q 165 50 170 70 Q 160 55 150 40" fill="#2C231F" />
+            <path d="M 205 100 Q 210 70 230 50 Q 200 65 200 100" fill="#2C231F" />
+            <path d="M 230 50 Q 220 40 200 45 Q 230 30 250 40 Q 240 50 230 50" fill="#2C231F" />
+            <path d="M 230 50 Q 245 60 250 80 Q 235 70 230 50" fill="#2C231F" />
+            <path d="M 160 100 Q 150 75 130 60 Q 155 75 155 100" fill="#2C231F" />
+            <path d="M 130 60 Q 140 50 155 55 Q 130 40 110 50 Q 120 60 130 60" fill="#2C231F" />
+            <path d="M 130 60 Q 110 70 100 85 Q 120 75 130 60" fill="#2C231F" />
+            <path d="M 120 100 Q 200 85 300 100 Z" fill="#2C231F" />
+            <path d="M 100 105 Q 200 100 320 105 Q 300 115 200 115 Q 100 115 100 105 Z" fill="#00C4E5" />
+            <path d="M 140 118 Q 200 112 280 118 Q 260 125 200 125 Q 140 125 140 118 Z" fill="#00C4E5" />
+            <path d="M 170 128 Q 200 124 250 128 Q 230 133 200 133 Q 170 133 170 128 Z" fill="#00C4E5" />
+            <text x="200" y="145" fontFamily="Impact, sans-serif" fontSize="32" fontWeight="bold" textAnchor="middle" fill="#FFE800" stroke="#D4AF37" strokeWidth="1" letterSpacing="2">KASHI TOURS</text>
+            <text x="200" y="165" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" textAnchor="middle" fill="#00C4E5">תיירות נופש ואטרקציות</text>
+          </svg>
+        );
+
+        // --- Data ---
+        const categories = ["הכל", "היסטוריה", "אמנות", "טבע", "אקסטרים", "פארקי שעשועים", "מורשת יהודית", "מסלולי טיול"];
+
+        const attractionsData = [
+          // History
+          { id: 1, name: "מצודת פראג (Prague Castle)", cat: "היסטוריה", rating: 5, age: "6+", time: "3–5 שעות", trans: "חשמלית 22 או מטרו A", price: "מבוגר: 450 CZK, ילד: 300 CZK", desc: "קומפלקס המצודות העתיק הגדול בעולם. כולל את קתדרלת ויטוס הקדוש וסמטת הזהב. מומלץ לצפות בחילופי המשמר.", img: "https://images.unsplash.com/photo-1599864230327-02082260ffc3?auto=format&fit=crop&w=800&q=80", link: "https://www.hrad.cz/en/prague-castle-for-visitors" },
+          { id: 2, name: "גשר קארל (Charles Bridge)", cat: "היסטוריה", rating: 5, age: "לכל הגילאים", time: "1–1.5 שעות", trans: "מטרו A לתחנת Staroměstská", price: "חינם (עלייה למגדלים בתשלום)", desc: "גשר האבן ההיסטורי והמפורסם של פראג עם 30 פסלי קדושים, אמני רחוב ונוף עוצר נשימה לנהר הוולטאבה.", img: "https://images.unsplash.com/photo-1513807016779-d51c0c026263?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/184/charles-bridge-karluv-most" },
+          { id: 3, name: "השעון האסטרונומי", cat: "היסטוריה", rating: 5, age: "לכל הגילאים", time: "1-2 שעות", trans: "מטרו A לתחנת Staroměstská", price: "מופע חינם. מגדל: 300 CZK", desc: "השעון הפעיל העתיק בעולם. מדי שעה עגולה מתקיים מופע בובות קצר. מומלץ לעלות למגדל לתצפית על כיכר העיר העתיקה.", img: "https://images.unsplash.com/photo-1590757270425-4c07da61559a?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/188/old-town-hall-with-the-astronomical-clock" },
+          { id: 4, name: "מגדל פטרין (Petřín Tower)", cat: "היסטוריה", rating: 4, age: "לכל הגילאים", time: "2–3 שעות", trans: "חשמלית לתחנת Újezd ורכבל", price: "מבוגר: 220 CZK, ילד: 150 CZK", desc: "מגדל אייפל הקטן של פראג. עלייה חווייתית ברכבל, נוף פנורמי משגע של העיר ומבוך מראות מהנה לילדים בקרבת מקום.", img: "https://images.unsplash.com/photo-1563824443411-cf0b9a6743b9?auto=format&fit=crop&w=800&q=80", link: "https://www.muzeumprahy.cz/en/petrin-lookout-tower" },
+          { id: 5, name: "מצודת וישהראד (Vyšehrad)", cat: "היסטוריה", rating: 4, age: "לכל הגילאים", time: "2–3 שעות", trans: "מטרו C לתחנת Vyšehrad", price: "כניסה לפארק חינם", desc: "המצודה העתיקה השנייה של פראג. מקום שקט ורגוע עם פארק ענק, גני שעשועים מעץ, נוף לנהר וכנסייה מרשימה.", img: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80", link: "https://www.praha-vysehrad.cz/?l=2" },
+          { id: 6, name: "מוזיאון האלכימאים", cat: "היסטוריה", rating: 4, age: "6-16", time: "1-1.5 שעות", trans: "חשמלית 22 לתחנת Malostranské", price: "מבוגר: 220 CZK", desc: "מסע אל המאה ה-16 לעולמם של מכשפים ואלכימאים. שחזור מעבדות עם שיקויים, אווירה מסתורית ובית קפה ייחודי.", img: "https://images.unsplash.com/photo-1514539079130-25950c84af65?auto=format&fit=crop&w=800&q=80", link: "https://www.muzeumalchymistu.cz/en/" },
+          { id: 7, name: "ארמון לובקוביץ'", cat: "היסטוריה", rating: 4, age: "10+", time: "2-3 שעות", trans: "חשמלית 22 לתחנת Pražský hrad", price: "מבוגר: 290 CZK", desc: "ארמון פרטי מפואר בתוך מצודת פראג. מציג אוסף אמנות נדיר וכתבי יד מקוריים של בטהובן ומוצרט. קונצרט יומי מומלץ.", img: "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80", link: "https://www.lobkowicz.cz/en/lobkowicz-palace" },
+          { id: 8, name: "מגדל אבק השריפה", cat: "היסטוריה", rating: 4, age: "6+", time: "1 שעה", trans: "מטרו B ל-Náměstí Republiky", price: "מבוגר: 190 CZK", desc: "שער גותי עתיק ומרשים שהיווה את נקודת ההתחלה של דרך המלכים. תצפית יפה על העיר העתיקה לאחר טיפוס במדרגות.", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80", link: "https://www.muzeumprahy.cz/en/powder-tower" },
+
+          // Art
+          { id: 9, name: "מוזיאון החושים והאשליות", cat: "אמנות", rating: 5, age: "3-99", time: "1.5–2 שעות", trans: "מטרו A/B לתחנת Můstek", price: "מבוגר: 350 CZK", desc: "מוזיאון אינטראקטיבי המערער את החושים עם עשרות אשליות אופטיות, חדרים הפוכים והמון הזדמנויות צילום למשפחה.", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", link: "https://www.museumofsenses.cz/" },
+          { id: 10, name: "מרכז אמנות DOX", cat: "אמנות", rating: 4, age: "10+", time: "2–3 שעות", trans: "חשמלית ל-Ortenovo náměstí", price: "מבוגר: 240 CZK", desc: "מרכז אמנות עכשווית ענק ונועז. גולת הכותרת היא ספינת אוויר ענקית מעץ המותקנת על גג המבנה.", img: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80", link: "https://www.dox.cz/en" },
+          { id: 11, name: "הגלריה הלאומית", cat: "אמנות", rating: 4, age: "12+", time: "3-4 שעות", trans: "חשמלית ל-Veletržní palác", price: "מבוגר: 250 CZK (עד גיל 26 חינם)", desc: "מבנה עצום המאכלס אמנות מודרנית בינלאומית וצ'כית (כולל פיקאסו וואן גוך). ילדים ונוער נכנסים חינם.", img: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80", link: "https://www.ngprague.cz/en/about/buildings/trade-fair-palace" },
+          { id: 12, name: "מוזיאון קאמפה", cat: "אמנות", rating: 4, age: "לכל הגילאים", time: "1.5–2 שעות", trans: "חשמלית לתחנת Hellichova", price: "מבוגר: 240 CZK", desc: "מוזיאון לאמנות מודרנית על גדות הנהר. הפסלים המפורסמים והמשעשעים בחצר אהובים מאוד על ילדים.", img: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80", link: "https://www.museumkampa.cz/en/" },
+          { id: 13, name: "תיאטרון האור השחור סרנץ'", cat: "אמנות", rating: 5, age: "4+", time: "1.5 שעות", trans: "מטרו B ל-Náměstí Republiky", price: "מבוגר: 650 CZK", desc: "חוויה ויזואלית ללא מילים שבה שחקנים וחפצים זוהרים באולטרה סגול בחושך מוחלט. מופע קסום לכל המשפחה.", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80", link: "https://www.srnectheatre.com/" },
+          { id: 14, name: "מאדאם טוסו פראג", cat: "אמנות", rating: 4, age: "6+", time: "1-1.5 שעות", trans: "מטרו A ל-Staroměstská", price: "מבוגר: 290 CZK", desc: "מוזיאון השעווה המפורסם במרכז העיר. הזדמנות מעולה להצטלם עם כוכבי קולנוע ודמויות היסטוריות אהובות.", img: "https://images.unsplash.com/photo-1595062584113-e22292a5433f?auto=format&fit=crop&w=800&q=80", link: "https://www.madametussauds.com/prague/en/" },
+          { id: 15, name: "גלריית הפלדה הממוחזרת", cat: "אמנות", rating: 5, age: "4-18", time: "1.5–2 שעות", trans: "מטרו A ל-Staroměstská", price: "מבוגר: 320 CZK", desc: "מוזיאון של פסלי ענק מסרטים (רובוטריקים, מארוול) עשויים חלקי מתכת ממוחזרים. חובה לגעת ולטפס!", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?auto=format&fit=crop&w=800&q=80", link: "https://www.galleryofsteelfigures.com/" },
+
+          // Nature
+          { id: 16, name: "גן החיות של פראג", cat: "טבע", rating: 5, age: "לכל הגילאים", time: "יום שלם", trans: "מטרו C ואז אוטובוס 112", price: "מבוגר: 330 CZK", desc: "מאחד מגני החיות הטובים בעולם. שטח פתוח וענק, ג'ונגל אינדונזי, עמק פילים, ורכבל פנימי מדליק.", img: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=800&q=80", link: "https://www.zoopraha.cz/en" },
+          { id: 17, name: "הגנים הבוטניים וחממת פאטה מורגנה", cat: "טבע", rating: 4, age: "לכל הגילאים", time: "2–3 שעות", trans: "מטרו C ואז אוטובוס 112", price: "מבוגר: 180 CZK", desc: "מרחבי טבע שלווים עם גולת כותרת עולמית: חממה טרופית עצומה עם צמחים אקזוטיים ופרפרים מתעופפים.", img: "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&w=800&q=80", link: "https://www.botanicka.cz/en" },
+          { id: 18, name: "פארק סטרומובקה", cat: "טבע", rating: 5, age: "לכל הגילאים", time: "2-3 שעות", trans: "חשמלית לתחנת Výstaviště", price: "חינם", desc: "הריאה הירוקה של פראג. מעולה למשפחות עם עגלות, מדשאות רחבות, אגמים קטנים עם ברווזים וגני שעשועים מעולים.", img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/303/stromovka-park" },
+          { id: 19, name: "פארק לטנה (Letná)", cat: "טבע", rating: 4, age: "לכל הגילאים", time: "1.5–2 שעות", trans: "חשמלית לתחנת Sparta", price: "חינם", desc: "פארק על גבעה המציע תצפית מפורסמת על גשרי העיר. יש בו 'גן בירה' להורים ומרחבי משחק וסקייטבורד לילדים.", img: "https://images.unsplash.com/photo-1513807016779-d51c0c026263?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/113/letna-parks-letenske-sady" },
+          { id: 20, name: "עמק פרוקופסקה", cat: "טבע", rating: 4, age: "4+", time: "3–4 שעות", trans: "רכבת ל-Praha-Hlubočepy", price: "חינם", desc: "שמורת טבע פראית עם צוקי גיר גבוהים, אגמים שקטים ומסלולי הליכה בחיק הטבע הרחק מהמולת העיר.", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/1758/prokopske-and-dalejske-valley" },
+          { id: 21, name: "גן ורטבה (Vrtba)", cat: "טבע", rating: 4, age: "לכל הגילאים", time: "1-1.5 שעות", trans: "חשמלית ל-Malostranské", price: "מבוגר: 130 CZK", desc: "גן בארוק מרהיב במורדות גבעת פטרין. בנוי בטרסות ומציע תצפית רומנטית לגגות האדומים של פראג.", img: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=800&q=80", link: "https://www.vrtbovska.cz/en/" },
+          { id: 22, name: "אי הקמפה", cat: "טבע", rating: 5, age: "לכל הגילאים", time: "1.5–2 שעות", trans: "הליכה מגשר קארל", price: "חינם", desc: "אי מלאכותי קטן המכונה 'ונציה של פראג'. פארק ירוק מקסים על שפת הנהר, אידיאלי לפיקניק והאכלת ברבורים.", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/470/kampa-island" },
+
+          // Extreme
+          { id: 23, name: "מנהרת הרוח", cat: "אקסטרים", rating: 5, age: "5+", time: "1.5 שעות", trans: "מטרו C ל-Letňany ואוטובוס", price: "1,800 CZK למשתתף", desc: "סימולטור צניחה חופשית במנהרת רוח. חוויה עוצרת נשימה, בטוחה לחלוטין בליווי צמוד, מושלמת לנוער.", img: "https://images.unsplash.com/photo-1524311548696-03a02790c743?auto=format&fit=crop&w=800&q=80", link: "https://www.hurricanefactory.com/prague/" },
+          { id: 24, name: "מגלשת ההרים בובסליי", cat: "אקסטרים", rating: 5, age: "3+", time: "1.5–2 שעות", trans: "מטרו B ל-Palmovka", price: "נסיעה: 100 CZK", desc: "מגלשת הרים פראית באורך 1,000 מטר שבה אתם שולטים במהירות. ממוקמת באזור ירוק עם מסעדה ונוף יפה.", img: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=800&q=80", link: "https://www.bobovka.cz/en/" },
+          { id: 25, name: "פארק החבלים", cat: "אקסטרים", rating: 4, age: "6+", time: "2.5–3 שעות", trans: "מטרו B ל-Vysočanská", price: "מבוגר: 390 CZK", desc: "מסלולי מכשולים, גשרים תלויים ואומגות בין צמרות העצים. פעילות פיזית ומגבשת עם רמות קושי לכל המשפחה.", img: "https://images.unsplash.com/photo-1470246973918-29a93221c455?auto=format&fit=crop&w=800&q=80", link: "https://www.lanovecentrum.cz/en/prague" },
+          { id: 26, name: "קרטינג Praga Arena", cat: "אקסטרים", rating: 5, age: "7+", time: "1.5–2 שעות", trans: "מונית לשולי פראג", price: "מקצה: 280 CZK", desc: "מסלול קרטינג מקצועי מפותל. קיימות מכוניות קטנות המותאמות במיוחד לילדים. מסכי תוצאות ומסעדה במקום.", img: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80", link: "https://www.pragaarena.cz/en" },
+          { id: 27, name: "סימולטור טיסה FlySim", cat: "אקסטרים", rating: 4, age: "10+", time: "1–1.5 שעות", trans: "מטרו ל-Můstek", price: "1,900 CZK לטיסה", desc: "חוויית 'הטסת' בואינג 737 בתא טייס בגודל טבעי עם טייס אמיתי צמוד ומסכים פנורמיים.", img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80", link: "https://www.flysim.cz/en/" },
+          { id: 28, name: "חדרי בריחה The Chamber", cat: "אקסטרים", rating: 5, age: "12+", time: "1.5 שעות", trans: "מטרו B ל-Náměstí Republiky", price: "קבוצה: כ-1,800 CZK", desc: "חברת חדרי הבריחה המובילה באירופה. תפאורה הוליוודית, חידות מורכבות ושחקנים חיים (באנגלית).", img: "https://images.unsplash.com/photo-1519074069444-1ba4e56637d3?auto=format&fit=crop&w=800&q=80", link: "https://thechamber.cz/en/" },
+          { id: 29, name: "סיור אופני הרים חשמליים", cat: "אקסטרים", rating: 4, age: "12+", time: "3–4 שעות", trans: "בתיאום בעיר", price: "1,200 CZK לאדם", desc: "סיור טבע מודרך על אופני הרים חשמליים המאפשרים טיפוס קל בשטח מחוץ למסלול התיירים הרגיל.", img: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80", link: "https://www.praguebye-bike.com/" },
+
+          // Parks
+          { id: 30, name: "פארק המים אקווה פאלאס", cat: "פארקי שעשועים", rating: 5, age: "לכל הגילאים", time: "יום שלם", trans: "אוטובוס מתחנת Opatov", price: "משפחה: 2,490 CZK", desc: "פארק המים המקורה הגדול במרכז אירופה. מגלשות אקסטרים, בריכות גלים, מסלול נהר פראי וספא עצום להורים.", img: "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=800&q=80", link: "https://www.aquapalace.cz/en" },
+          { id: 31, name: "דינופארק (DinoPark Harfa)", cat: "פארקי שעשועים", rating: 4, age: "2-10", time: "2–3 שעות", trans: "מטרו B ל-Českomoravská", price: "מבוגר: 220 CZK", desc: "פארק דינוזאורים ייחודי על גג קניון. כולל דגמי ענק זזים, קולנוע תלת מימד וארגז חול לחפירת 'עצמות'.", img: "https://images.unsplash.com/photo-1517030330234-94c4fa9fc8ca?auto=format&fit=crop&w=800&q=80", link: "https://www.dinopark.cz/en/dinopark-praha" },
+          { id: 32, name: "פארק שעשועים מאיאלנד", cat: "פארקי שעשועים", rating: 5, age: "2-12", time: "3–4 שעות", trans: "אוטובוס מ-Bořislavka", price: "משפחה: 1,290 CZK", desc: "פארק השעשועים המקורה הגדול בצ'כיה המעוצב סביב הדבורה מאיה. קרוסלות, רכבת הרים ומתחמי משחק צבעוניים.", img: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=800&q=80", link: "https://www.pop.cz/majaland" },
+          { id: 33, name: "ממלכת הרכבות", cat: "פארקי שעשועים", rating: 4, age: "3-12", time: "2–3 שעות", trans: "מטרו B ל-Anděl", price: "מבוגר: 300 CZK", desc: "תצוגת דגמי הרכבות המיניאטוריים הגדולה בצ'כיה. רכבות נוסעות, ערים קטנות וסימולטורים אינטראקטיביים.", img: "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=800&q=80", link: "https://www.kralovstvi-zeleznic.cz/en/" },
+          { id: 34, name: "ג'אמפארק", cat: "פארקי שעשועים", rating: 4, age: "5+", time: "1–2 שעות", trans: "מטרו C ל-Letňany ואוטובוס", price: "260 CZK לשעה", desc: "מתחם טרמפולינות מקורה ענק לפריקת אנרגיה. כולל בריכות ספוג, כדורסל טרמפולינות וקירות קפיצה.", img: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80", link: "https://www.jumppark.cz/en" },
+          { id: 35, name: "מוזיאון הלגו", cat: "פארקי שעשועים", rating: 4, age: "3+", time: "1.5–2 שעות", trans: "מטרו B ל-Národní třída", price: "מבוגר: 280 CZK", desc: "מוזיאון הלגו הפרטי הגדול באירופה. מציג אלפי דגמים מרהיבים, ואזור משחק ובנייה ענק לילדים.", img: "https://images.unsplash.com/photo-1560942485-b2a11cc13456?auto=format&fit=crop&w=800&q=80", link: "https://www.muzeumlega.cz/en/prague" },
+          { id: 36, name: "פארק המדע iQLANDIA", cat: "פארקי שעשועים", rating: 5, age: "4-18", time: "יום שלם", trans: "אוטובוס לליברץ", price: "משפחה: 1,090 CZK", desc: "מרכז מדע עצום. מאות ניסויים, מופעי אש, סימולטור רעידות אדמה ולמידה אינטראקטיבית שילדים עפים עליה.", img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80", link: "https://www.iqlandia.cz/en" },
+
+          // Jewish Heritage
+          { id: 37, name: "בית הכנסת הישן-חדש", cat: "מורשת יהודית", rating: 5, age: "8+", time: "1 שעה", trans: "מטרו A ל-Staroměstská", price: "מבוגר: 220 CZK", desc: "בית הכנסת הפעיל העתיק באירופה (1270). אפוף אגדות, כולל אגדת 'הגולם מפראג' שיצר המהר\"ל.", img: "https://images.unsplash.com/photo-1543731068-7e0f5beff43a?auto=format&fit=crop&w=800&q=80", link: "https://www.synagogue.cz/en/old-new-synagogue" },
+          { id: 38, name: "בית העלמין היהודי העתיק", cat: "מורשת יהודית", rating: 5, age: "10+", time: "1 שעה", trans: "מטרו A ל-Staroměstská", price: "בכרטיס משולב לרובע", desc: "מקום מצמרר ומרשים של קברים בשכבות עקב חוסר מקום בגטו העתיק. מקום קבורתו של המהר\"ל מפראג.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.jewishmuseum.cz/en/info/visit/admission/" },
+          { id: 39, name: "בית הכנסת הספרדי", cat: "מורשת יהודית", rating: 5, age: "לכל הגילאים", time: "1 שעה", trans: "מטרו A ל-Staroměstská", price: "בכרטיס משולב לרובע", desc: "נחשב ליפה באירופה. עיטורי זהב, ויטראז'ים ואדריכלות מורית מרהיבה. מארח גם קונצרטים קלאסיים בערבים.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.jewishmuseum.cz/en/object/spanish-synagogue/" },
+          { id: 40, name: "בית הכנסת פנקס", cat: "מורשת יהודית", rating: 5, age: "10+", time: "1 שעה", trans: "מטרו A ל-Staroměstská", price: "בכרטיס משולב לרובע", desc: "אנדרטה לנספי השואה. הקירות מכוסים כולם בשמות קורבנות. הקומה השנייה מציגה ציורים מרגשים של ילדי טרזין.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.jewishmuseum.cz/en/object/pinkas-synagogue/" },
+          { id: 41, name: "בית הכנסת מייזל", cat: "מורשת יהודית", rating: 4, age: "8+", time: "1 שעה", trans: "מטרו A ל-Staroměstská", price: "בכרטיס משולב לרובע", desc: "מבנה ניאו-גותי יפהפה. משמש כמוזיאון המציג תערוכה אינטראקטיבית על תולדות היהודים בבוהמיה.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.jewishmuseum.cz/en/object/maisel-synagogue/" },
+          { id: 42, name: "בית הכנסת ירושלים", cat: "מורשת יהודית", rating: 5, age: "לכל הגילאים", time: "45 דקות", trans: "מטרו C ל-Hlavní nádraží", price: "מבוגר: 150 CZK", desc: "המבנה היהודי הגדול בפראג, מחוץ לרובע העתיק. צבעוני להפליא בסגנון אר-נובו ומורי, יפהפה לצילומים.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.synagogue.cz/en/jerusalem-synagogue" },
+          { id: 43, name: "אולם הטקסים (Ceremonial Hall)", cat: "מורשת יהודית", rating: 4, age: "8+", time: "45 דקות", trans: "מטרו A ל-Staroměstská", price: "בכרטיס משולב לרובע", desc: "מבנה ציורי ליד בית העלמין ששימש את החברה קדישא. מציג תערוכה על מסורות ומנהגי קבורה.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80", link: "https://www.jewishmuseum.cz/en/object/ceremonial-hall/" },
+          { id: 44, name: "מסלול הליכה ברובע", cat: "מורשת יהודית", rating: 5, age: "8+", time: "3–4 שעות", trans: "מטרו A ל-Staroměstská", price: "כרטיס משולב: 400 CZK", desc: "מסלול רציף העובר בכל אתרי החובה של הרובע היהודי, בין סמטאות וחנויות יוקרה של רחוב פריז. אידיאלי לחצי יום.", img: "https://images.unsplash.com/photo-1541343072874-3ee36286024b?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/801/josefov-the-jewish-quarter" },
+
+          // Routes
+          { id: 45, name: "דרך המלך", cat: "מסלולי טיול", rating: 5, age: "לכל הגילאים", time: "3–4 שעות", trans: "התחלה: מטרו B Náměstí Republiky", price: "חינם", desc: "המסלול ההיסטורי של מלכי בוהמיה. עובר דרך שער אבק השריפה, כיכר העיר העתיקה, גשר קארל ועד המצודה.", img: "https://images.unsplash.com/photo-1541343072874-3ee36286024b?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/2744/the-royal-route" },
+          { id: 46, name: "טיילת נפלאבקה", cat: "מסלולי טיול", rating: 4, age: "לכל הגילאים", time: "2 שעות", trans: "מטרו B ל-Karlovo náměstí", price: "חינם", desc: "הליכה שטוחה ונעימה על גדות הנהר. בשבת בבוקר מתקיים כאן שוק איכרים תוסס, לצד בתי קפה צפים.", img: "https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/1665/naplavka" },
+          { id: 47, name: "כיכר ואצלב", cat: "מסלולי טיול", rating: 4, age: "לכל הגילאים", time: "2–3 שעות", trans: "מטרו A/B ל-Můstek", price: "חינם", desc: "השדרה המרכזית לשופינג (כולל פרימרק), מסעדות והיסטוריה מודרנית בקצה ניצב מבנה המוזיאון הלאומי.", img: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/123/wenceslas-square" },
+          { id: 48, name: "מגבעת פטרין לפארק קמפה", cat: "מסלולי טיול", rating: 5, age: "לכל הגילאים", time: "2–3 שעות", trans: "רכבל ב-Újezd", price: "חינם", desc: "מסלול מוצל בירידה מהגבעה הירוקה דרך גני ורדים ועד לנהר. תצפיות מרהיבות ופיקניק מושלם לסיים בו.", img: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/" },
+          { id: 49, name: "שמורת גן עדן הבוהמי", cat: "מסלולי טיול", rating: 5, age: "6+", time: "יום שלם", trans: "רכב או אוטובוס ל-Turnov", price: "כניסה: 120 CZK", desc: "פלא טבע מחוץ לפראג. ערי סלע חול ענקיות ויערות עבותים למסלול הרפתקאות במעין מבוך סלעים.", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80", link: "https://www.cesky-raj.info/en/" },
+          { id: 50, name: "שמורת דיבוקה שארקה", cat: "מסלולי טיול", rating: 4, age: "לכל הגילאים", time: "3–4 שעות", trans: "חשמלית 20", price: "חינם", desc: "פארק טבע עצום בפאתי העיר. הליכה מישורית בעמק קסום עם נחל, ואפשרות טבילה בבריכה טבעית בקיץ.", img: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80", link: "https://www.prague.eu/en/object/places/1054/divoka-sarka" },
+          { id: 51, name: "קארלובי וארי", cat: "מסלולי טיול", rating: 5, age: "לכל הגילאים", time: "יום שלם", trans: "אוטובוס מתחנת Florenc", price: "אוטובוס כ-360 CZK", desc: "עיירת ספא מהממת במרחק שעתיים. מסורת טעימת מים מינרליים חמים, ואדריכלות אירופאית צבעונית קלאסית.", img: "https://images.unsplash.com/photo-1590757270425-4c07da61559a?auto=format&fit=crop&w=800&q=80", link: "https://www.karlovyvary.cz/en" }
+        ];
+
+        function App() {
+          const [activeCat, setActiveCat] = useState("הכל");
+          const [searchQuery, setSearchQuery] = useState("");
+          const [selectedAttr, setSelectedAttr] = useState(null);
+          const [showDisclaimer, setShowDisclaimer] = useState(true);
+
+          const filteredData = useMemo(() => {
+            return attractionsData.filter(item => {
+              const matchCat = activeCat === "הכל" || item.cat === activeCat;
+              const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                  item.desc.toLowerCase().includes(searchQuery.toLowerCase());
+              return matchCat && matchSearch;
+            });
+          }, [activeCat, searchQuery]);
+
+          return (
+            <div className="min-h-screen">
+              {/* Header */}
+              <header className="bg-white shadow-sm sticky top-0 z-40">
+                <div className="max-w-6xl mx-auto px-4 py-4">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center">
+                      <KashiLogo />
+                    </div>
+                    <div className="relative w-full md:w-96">
+                      <input 
+                        type="text" 
+                        placeholder="חיפוש אטרקציה..." 
+                        className="w-full pl-10 pr-4 py-2 border rounded-full bg-gray-100 focus:bg-white focus:ring-2 focus:ring-yellow-400 outline-none transition"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      <i className="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                    </div>
+                  </div>
+                </div>
+              </header>
+
+              {/* AI Disclaimer */}
+              {showDisclaimer && (
+                <div className="bg-blue-50 border-b border-blue-100">
+                  <div className="max-w-6xl mx-auto px-4 py-3 flex items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <i className="fas fa-exclamation-triangle text-blue-500 mt-1"></i>
+                      <p className="text-sm text-blue-800 leading-tight">
+                        <strong>מידע חשוב:</strong> המדריך נבנה בסיוע בינה מלאכותית. ייתכנו שגיאות או שינויים במחירים ושעות פתיחה. מומלץ תמיד לוודא מול האתר הרשמי לפני ההגעה.
+                      </p>
+                    </div>
+                    <button onClick={() => setShowDisclaimer(false)} className="text-blue-400 hover:text-blue-600">
+                      <i className="fas fa-times text-lg"></i>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Main Content */}
+              <main className="max-w-6xl mx-auto px-4 py-8">
+                <div className="mb-8 text-center md:text-right">
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">מדריך פראג למשפחות</h1>
+                  <p className="text-gray-600">51 אטרקציות וחוויות בלתי נשכחות לכל המשפחה, מאת קאשי טורס.</p>
+                </div>
+
+                {/* Categories */}
+                <div className="flex overflow-x-auto pb-4 mb-6 gap-2 hide-scrollbar">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCat(cat)}
+                      className={`whitespace-nowrap px-5 py-2 rounded-full font-medium transition-colors border ${
+                        activeCat === cat 
+                          ? "bg-yellow-400 border-yellow-500 text-gray-900 shadow-sm" 
+                          : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Grid */}
+                {filteredData.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredData.map(attr => (
+                      <div 
+                        key={attr.id} 
+                        className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100 cursor-pointer group flex flex-col"
+                        onClick={() => setSelectedAttr(attr)}
+                      >
+                        <div className="relative h-48 overflow-hidden bg-gray-200">
+                          <img 
+                            src={attr.img} 
+                            alt={attr.name} 
+                            onError={(e) => { e.target.onerror = null; e.target.src = `https://loremflickr.com/800/600/prague,travel?lock=${attr.id}`; }}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                          />
+                          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur text-gray-800 text-xs font-bold px-2.5 py-1 rounded-full shadow">
+                            {attr.cat}
+                          </div>
+                        </div>
+                        
+                        <div className="p-5 flex-grow flex flex-col">
+                          <h3 className="font-bold text-lg text-gray-900 leading-tight mb-2">{attr.name}</h3>
+                          <div className="flex items-center mb-3">
+                            {[...Array(5)].map((_, i) => (
+                              <i key={i} className={`fa-star text-sm ${i < attr.rating ? 'fas text-yellow-400' : 'far text-gray-300'}`}></i>
+                            ))}
+                          </div>
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{attr.desc}</p>
+                          <div className="mt-auto space-y-1">
+                            <div className="flex items-center text-gray-500 text-xs">
+                              <i className="far fa-clock ml-1.5 text-gray-400"></i>
+                              <span>{attr.time}</span>
+                            </div>
+                            <div className="flex items-center text-gray-500 text-xs">
+                              <i className="fas fa-ticket-alt ml-1.5 text-gray-400"></i>
+                              <span className="truncate">{attr.price}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20">
+                    <i className="fas fa-search text-gray-300 text-5xl mb-4"></i>
+                    <h3 className="text-xl font-bold text-gray-600">לא נמצאו תוצאות</h3>
+                  </div>
+                )}
+              </main>
+
+              {/* Modal */}
+              {selectedAttr && (
+                <div className="fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4 backdrop-blur-sm" onClick={() => setSelectedAttr(null)}>
+                  <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => setSelectedAttr(null)} className="absolute top-4 left-4 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center z-10">
+                      <i className="fas fa-times"></i>
+                    </button>
+                    
+                    <div className="h-64 relative">
+                      <img 
+                        src={selectedAttr.img} 
+                        alt={selectedAttr.name} 
+                        onError={(e) => { e.target.onerror = null; e.target.src = `https://loremflickr.com/800/600/prague,travel?lock=${selectedAttr.id}`; }}
+                        className="w-full h-full object-cover" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                      <div className="absolute bottom-4 right-6 left-6 text-white">
+                        <span className="inline-block bg-yellow-500 text-yellow-950 text-xs font-bold px-2 py-1 rounded mb-2">{selectedAttr.cat}</span>
+                        <h2 className="text-2xl font-bold">{selectedAttr.name}</h2>
+                      </div>
+                    </div>
+
+                    <div className="p-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div className="flex items-start gap-3">
+                          <i className="far fa-calendar-alt text-blue-500 mt-1"></i>
+                          <div>
+                            <span className="block text-xs font-bold text-gray-500 uppercase">גילאים מומלצים</span>
+                            <span className="text-gray-800 text-sm">{selectedAttr.age}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <i className="far fa-clock text-blue-500 mt-1"></i>
+                          <div>
+                            <span className="block text-xs font-bold text-gray-500 uppercase">משך זמן</span>
+                            <span className="text-gray-800 text-sm">{selectedAttr.time}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <i className="fas fa-tram text-blue-500 mt-1"></i>
+                          <div>
+                            <span className="block text-xs font-bold text-gray-500 uppercase">הגעה</span>
+                            <span className="text-gray-800 text-sm">{selectedAttr.trans}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <i className="fas fa-ticket-alt text-blue-500 mt-1"></i>
+                          <div>
+                            <span className="block text-xs font-bold text-gray-500 uppercase">מחיר</span>
+                            <span className="text-gray-800 text-sm">{selectedAttr.price}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mb-8">
+                        <h4 className="font-bold text-lg mb-2 text-gray-900 flex items-center gap-2">
+                          <i className="fas fa-info-circle text-yellow-500"></i> על האטרקציה
+                        </h4>
+                        <p className="text-gray-700 leading-relaxed">{selectedAttr.desc}</p>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                        <a href={selectedAttr.link} target="_blank" className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2.5 rounded-lg font-medium">
+                          <i className="fas fa-external-link-alt"></i> אתר רשמי
+                        </a>
+                        <a href={selectedAttr.link} target="_blank" className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-950 px-6 py-2.5 rounded-lg font-bold">
+                          <i className="fas fa-ticket-alt"></i> הזמנת כרטיסים
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
