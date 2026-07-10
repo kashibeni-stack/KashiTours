@@ -1,169 +1,694 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronDown, ChevronRight, BookOpen, Shield, Info, Layers, PlayCircle, Anchor, AlertCircle } from 'lucide-react';
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ברידג' - האפליקציה המלאה</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    .animate-fade-in-left { animation: fadeInLeft 0.3s ease-out forwards; }
+    
+    /* הסתרת החץ המקורי של details */
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    
+    /* גלילה אופקית נוחה לטבלאות */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 font-sans pb-10 min-h-screen text-slate-800 text-right">
 
-// --- DATA STRUCTURE ---
-const bridgeData = [
-  {
-    id: 0,
-    title: "פרק ראשון - כללי",
-    icon: <BookOpen className="w-6 h-6" />,
-    sections: [
+  <header class="bg-emerald-700 text-white shadow-md sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="backBtn" onclick="goBack()" class="hidden p-2 -mr-2 rounded-full hover:bg-emerald-600 transition-colors focus:outline-none" aria-label="חזור">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h1 id="headerTitle" class="text-xl font-bold tracking-tight">מדריך ברידג' המלא</h1>
+      </div>
+      <div class="flex items-center gap-2 opacity-90">
+        <span class="text-red-200 text-xl">♥️</span>
+        <span class="text-slate-100 text-xl">♠️</span>
+        <span class="text-red-200 text-xl">♦️</span>
+        <span class="text-slate-100 text-xl">♣️</span>
+      </div>
+    </div>
+    <!-- פירורי לחם (Breadcrumbs) -->
+    <div id="breadcrumbs" class="max-w-2xl mx-auto px-4 py-2 bg-emerald-800 text-xs text-emerald-100 hidden flex-wrap gap-1 items-center">
+      <!-- יוזרק דרך JS -->
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 mt-6" id="app">
+    <!-- התוכן יוזרק לכאן דרך JavaScript -->
+  </main>
+
+  <script>
+    // --- מבנה הנתונים המלא והמפורט - 3 רמות עומק ---
+    const bridgeData = [
       {
-        title: "טבלת טווחי ניקוד לפי תפקידים",
-        content: (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-right border-collapse">
-              <thead className="bg-emerald-100">
-                <tr>
-                  <th className="p-2 border border-emerald-200 font-bold">תפקיד</th>
-                  <th className="p-2 border border-emerald-200 font-bold">פותח</th>
-                  <th className="p-2 border border-emerald-200 font-bold">משיב לפותח</th>
-                  <th className="p-2 border border-emerald-200 font-bold">אוברקול</th>
-                  <th className="p-2 border border-emerald-200 font-bold">משיב לאוברקול</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="bg-white">
-                  <td className="p-2 border border-emerald-200 font-bold">ניקוד מינימלי להכרזה:</td>
-                  <td className="p-2 border border-emerald-200">12 נק"ג</td>
-                  <td className="p-2 border border-emerald-200">6 נק"ג</td>
-                  <td className="p-2 border border-emerald-200">9 נק"ג</td>
-                  <td className="p-2 border border-emerald-200">-</td>
-                </tr>
-                <tr className="bg-emerald-50">
-                  <td className="p-2 border border-emerald-200 font-bold">חלש</td>
-                  <td className="p-2 border border-emerald-200">12-14</td>
-                  <td className="p-2 border border-emerald-200">6-9</td>
-                  <td className="p-2 border border-emerald-200">9-11</td>
-                  <td className="p-2 border border-emerald-200">9-11</td>
-                </tr>
-                <tr className="bg-white">
-                  <td className="p-2 border border-emerald-200 font-bold">בינוני</td>
-                  <td className="p-2 border border-emerald-200">15-17</td>
-                  <td className="p-2 border border-emerald-200">10-12</td>
-                  <td className="p-2 border border-emerald-200">12-14</td>
-                  <td className="p-2 border border-emerald-200">12-14</td>
-                </tr>
-                <tr className="bg-emerald-50">
-                  <td className="p-2 border border-emerald-200 font-bold">חזק</td>
-                  <td className="p-2 border border-emerald-200">18+</td>
-                  <td className="p-2 border border-emerald-200">13+</td>
-                  <td className="p-2 border border-emerald-200">15-17</td>
-                  <td className="p-2 border border-emerald-200">15+</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )
+        id: "c1", 
+        title: "פרק ראשון - כללי",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>`,
+        sections: [
+          {
+            id: "c1_s1",
+            title: "1. טבלת טווחי ניקוד לפי תפקידים",
+            content: `
+              <div class="table-container bg-white p-2 rounded-lg shadow-sm border border-slate-200">
+                <table class="min-w-full text-sm text-right border-collapse whitespace-nowrap">
+                  <thead class="bg-emerald-100">
+                    <tr>
+                      <th class="p-2 border border-emerald-200 font-bold">תפקיד</th>
+                      <th class="p-2 border border-emerald-200 font-bold">פותח</th>
+                      <th class="p-2 border border-emerald-200 font-bold">משיב לפותח</th>
+                      <th class="p-2 border border-emerald-200 font-bold">אוברקול</th>
+                      <th class="p-2 border border-emerald-200 font-bold">משיב לאוברקול</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="bg-white">
+                      <td class="p-2 border border-emerald-200 font-bold">ניקוד מינימלי להכרזה:</td>
+                      <td class="p-2 border border-emerald-200">12 נק"ג</td>
+                      <td class="p-2 border border-emerald-200">6 נק"ג</td>
+                      <td class="p-2 border border-emerald-200">9 נק"ג</td>
+                      <td class="p-2 border border-emerald-200">-</td>
+                    </tr>
+                    <tr class="bg-emerald-50">
+                      <td class="p-2 border border-emerald-200 font-bold">חלש</td>
+                      <td class="p-2 border border-emerald-200">12-14</td>
+                      <td class="p-2 border border-emerald-200">6-9</td>
+                      <td class="p-2 border border-emerald-200">9-11</td>
+                      <td class="p-2 border border-emerald-200">9-11</td>
+                    </tr>
+                    <tr class="bg-white">
+                      <td class="p-2 border border-emerald-200 font-bold">בינוני</td>
+                      <td class="p-2 border border-emerald-200">15-17</td>
+                      <td class="p-2 border border-emerald-200">10-12</td>
+                      <td class="p-2 border border-emerald-200">12-14</td>
+                      <td class="p-2 border border-emerald-200">12-14</td>
+                    </tr>
+                    <tr class="bg-emerald-50">
+                      <td class="p-2 border border-emerald-200 font-bold">חזק</td>
+                      <td class="p-2 border border-emerald-200">18+</td>
+                      <td class="p-2 border border-emerald-200">13+</td>
+                      <td class="p-2 border border-emerald-200">15-17</td>
+                      <td class="p-2 border border-emerald-200">15+</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            `
+          },
+          {
+            id: "c1_s2",
+            title: "2. כללים למכרז",
+            content: `
+              <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                <ul class="list-disc list-inside space-y-3 text-slate-700">
+                  <li>כל עוד יש סיכוי למשחק מלא, ההכרזה ממשיכה.</li>
+                  <li>הכרזה שניה חייבת להגדיר את הניקוד, <strong>לא "משקרים" בנקודות</strong>.</li>
+                  <li>ההכרזה השניה צריכה להראות גם את החלוקה של היד.</li>
+                  <li>במידה ולא ניתן להראות חלוקה וגם ניקוד, "נזייף" בחלוקה במיינור.</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
       },
       {
-        title: "כללים למכרז",
-        content: (
-          <ul className="list-disc list-inside space-y-2 text-slate-700">
-            <li>כל עוד יש סיכוי למשחק מלא, ההכרזה ממשיכה.</li>
-            <li>הכרזה שניה חייבת להגדיר את הניקוד, לא "משקרים" בנקודות.</li>
-            <li>ההכרזה השניה צריכה להראות גם את החלוקה של היד.</li>
-            <li>במידה ולא ניתן להראות חלוקה וגם ניקוד, "נזייף" בחלוקה במיינור.</li>
-          </ul>
-        )
-      }
-    ]
-  },
-  {
-    id: 1,
-    title: "פרק שני - הכרזות",
-    icon: <Layers className="w-6 h-6" />,
-    sections: [
-      {
-        title: "הכרזה ראשונה של הפותח",
-        content: (
-          <ul className="list-disc list-inside space-y-2 text-slate-700">
-            <li><strong>1NT</strong> – יד מאוזנת, 15-17 נק"ג.</li>
-            <li><strong>1 מייג'ור</strong> – 5+ קלפים.</li>
-            <li><strong>סדרת המיינור הארוכה</strong></li>
-            <li><strong>2NT</strong> – 20-22 נק"ג, יד מאוזנת.</li>
-          </ul>
-        )
+        id: "c2", 
+        title: "פרק שני - הכרזות",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
+        sections: [
+          {
+            id: "c2_s1",
+            title: "1. הכרזה ראשונה של הפותח",
+            subsections: [
+              { title: "1.1 פתיחות בסיסיות", content: `
+                <ul class="list-disc list-inside space-y-2 text-slate-700">
+                  <li><strong>1NT</strong> – יד מאוזנת, 15-17 נק"ג.</li>
+                  <li><strong>1 מייג'ור</strong> – 5+ קלפים בסדרה.</li>
+                  <li><strong>סדרת המיינור הארוכה</strong> – פותחים במיינור הארוך במידה ואין 5 במייג'ור או שהיד לא מאוזנת מספיק ל-1NT.</li>
+                  <li><strong>2NT</strong> – 20-22 נק"ג, יד מאוזנת.
+                    <div class="mt-2 bg-slate-50 p-2 rounded border border-slate-200">
+                      <span class="font-bold">המשיב לפותח (מול פתיחת 2NT):</span>
+                      <ul class="list-disc list-inside mt-1">
+                        <li>משיב חלש (0-3 נק'): יאמר פאס או יעשה טרנספר.</li>
+                        <li>משיב עם 4+ נק"ג: יכריז 3NT / סטיימן / טרנספר.</li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              `},
+              { title: "1.2 פתיחה 2♣️ (חזק, מחייב משחק מלא)", content: `
+                <p class="text-red-600 font-bold mb-2">לא עוצרים לפני משחק מלא!!! חשיבה אם יש סלם.</p>
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">התנאים לפותח:</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li>22+ נק"ג ויד לא מאוזנת.</li>
+                      <li><strong>או:</strong> 23+ נק"ג ויד מאוזנת.</li>
+                      <li><strong>או:</strong> סדרה סגורה (6 קלפים עם AKQJ או 7 קלפים עם AKQ) עם 9+ לקיחות בטוחות ו-17+ נק"ג.</li>
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">משיב (הכרזה ראשונה מראה חוזק בלבד):</span>
+                    <p class="font-bold mb-1">המשיב חייב להכריז גם ב-0 נק"ג!</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>2♦️</strong>: 0-7 נק"ג <strong>או</strong> 8+ נק"ג ללא 5+ קלפים בסדרה.</li>
+                      <li><strong>3♦️, 3♣️, 2♠️, 2♥️</strong>: 8+ נק"ג ו-5 קלפים בסדרה.</li>
+                      <li><span class="text-red-600 font-bold">בכל מצב לא יכריז NT בהכרזה ראשונה!</span></li>
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">הכרזה שניה של הפותח (מראה חלוקה):</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>2NT:</strong> 23-24 נק"ג, יד מאוזנת. (המשך: סטיימן, טרנספר, NT).</li>
+                      <li><strong>3NT:</strong> 25-27 נק"ג, יד מאוזנת. (המשך: סטיימן, טרנספר, NT).</li>
+                      <li><strong>סדרה חדשה בגובה מינימלי:</strong> 22+ נק"ג ו-5 קלפים בסדרה.</li>
+                      <li><strong>סדרה חדשה בקפיצה:</strong> סדרה סגורה, 9+ לקיחות, 17+ נק"ג (זו תהיה סדרת השליט).</li>
+                    </ul>
+                </div>
+                <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1">הכרזה שניה של המשיב:</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>תמיכה בשותף:</strong> 0-4 נק' יסגור למלא, 5-7 תמיכה גובה 3, 8+ יכריז 4NT (מוד סלם).</li>
+                      <li><strong>סדרה חדשה:</strong> 5+ קלפים בסדרה וכל ניקוד.</li>
+                      <li><strong>ללא התאמה ו-5 בסדרה:</strong> יכריז 2NT.</li>
+                    </ul>
+                </div>
+              `},
+              { title: "1.3 הכרזת מנע (גובה 3 ו-4)", content: `
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">תנאים לפותח:</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li>6-10 נק"ג. בגובה 3: 7 קלפים בדיוק. בגובה 4: 8+ קלפים.</li>
+                      <li>2+ מכובדים בסדרה (מ-AKQ). ללא 4+ קלפים במייג'ור צדדי.</li>
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">משיב לפתיחה בגובה 3 במייג'ור (16+ למלא):</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>תמיכה:</strong> 1+ קלפים, 16+ נק' - הכרזת בגובה 4 (SignOff).</li>
+                      <li><strong>סדרה חדשה:</strong> 5+ קלפים, 18+ נק"ג (Forcing). <em>הפותח יראה: 3 קלפים (יתמוך גובה 4), 2 קלפים (3NT), 0/1 קלפים+רביעייה במיינור (4D/4C), 0/1 בלי רביעיה מיינור (חזרה לסדרה מקורית גובה 4).</em></li>
+                    </ul>
+                </div>
+                <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1">משיב לפתיחה בגובה 3 במיינור (16+ למלא):</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>סדרה חדשה במייג'ור:</strong> 5+ קלפים, 18+ נק"ג, Forcing.</li>
+                      <li><strong>3NT:</strong> 2+ קלפים בסדרת השותף (להחזרת יד), 16+ נק"ג, עוצרים בכל הסדרות האחרות (SignOff).</li>
+                    </ul>
+                </div>
+              `},
+              { title: "1.4 הכרזת מנע (גובה 2 ♦️, ♠️, ♥️)", content: `
+                <div class="mb-3">
+                    <span class="font-bold border-b border-emerald-300 pb-1">תנאים לפותח:</span>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li>6-10 נק"ג, 6 קלפים בסדרה, 2+ מכובדים, ללא 4+ קלפים במייג'ור צדדי.</li>
+                      <li><em>הערה: אם היד עונה לחוק ה-20 נפתח בגובה 1!</em></li>
+                    </ul>
+                </div>
+                <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1">משיב לפותח:</span>
+                    <p class="mt-1 text-slate-700"><strong>עד 14 נקודות:</strong> פאס. <strong>15+ נקודות יכריז כך:</strong></p>
+                    <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                      <li><strong>תמיכה גובה 3:</strong> 15-17 נק' (Limit). <strong>תמיכה גובה 4:</strong> 18+ נק' (Signoff).</li>
+                      <li><strong>סדרה חדשה במייג'ור:</strong> 5+ קלפים, 15+ (Forcing).</li>
+                      <li><strong>2NT:</strong> אין תמיכה/מייג'ור, 15-17 (Limit). <strong>3NT:</strong> 18+ (Signoff).</li>
+                    </ul>
+                </div>
+              `}
+            ]
+          },
+          {
+            id: "c2_s2",
+            title: "2. משיב לפותח (ללא התערבות)",
+            subsections: [
+              { title: "2.1 סדר עדיפויות במייג'ור", content: `
+                <ul class="list-decimal list-inside space-y-2 text-slate-700">
+                  <li><strong>תמיכה בשותף:</strong>
+                    <ul class="list-disc list-inside ml-5 text-sm">
+                      <li>חזק 13+ (3+ קלפים): מחליף סדרה בהכרזה 1, נראה תמיכה בהכרזה 2.</li>
+                      <li>חלש 0-5 (5+ קלפים): סוגר מיידית גובה 4.</li>
+                      <li>בינוני 6-12 (3+ קלפים): תומך לפי חוזק.</li>
+                    </ul>
+                  </li>
+                  <li><strong>סדרה חדשה גובה 1:</strong> 6+ נק", 4+ קלפים.</li>
+                  <li><strong>סדרה חדשה גובה 2:</strong> 10+ נק", 5+ קלפים.</li>
+                  <li><strong>NT:</strong> גובה 1 (6-10), גובה 2 (11-12 מאוזן), גובה 3 (13+ מאוזן).</li>
+                </ul>
+              `},
+              { title: "2.2 סדר עדיפויות במיינור + משיב חלש", content: `
+                <ol class="list-decimal list-inside space-y-1 text-slate-700">
+                  <li>סדרה חדשה בגובה 1 (6+ נק', 4+ קלפים).</li>
+                  <li>תמיכה בשותף (6+ נק', 5+ קלפים).</li>
+                  <li>סדרה חדשה בגובה 2 (10+ נק', 5+ קלפים).</li>
+                  <li>NT (כמו במייג'ור).</li>
+                </ol>
+                <div class="mt-3 p-3 bg-red-50 border border-red-100 rounded text-slate-700">
+                  <span class="font-bold text-red-800">משיב חלש מאוד (0-5 נק"ג):</span><br/>
+                  ללא תמיכה ו-6+ קלפים בסדרה אחרת (בעיקר מול פתיחת קוצר במיינור) - יכריז את הסדרה שלו <strong>בקפיצה</strong>.
+                </div>
+              `},
+              { title: "2.3 משיב מול פתיחת 1NT", content: `
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li><strong>סטיימן (2♣️):</strong> 8+ נק"ג, 4 קלפים במייג'ור.</li>
+                  <li><strong>טרנספר:</strong> 5+ קלפים בסדרה, אין הגבלת נקודות.</li>
+                </ul>
+              `},
+              { title: "2.4 מוסכמת אוגוסט (August)", content: `
+                <p class="text-slate-700"><strong>משיב חזק (15+)</strong> בתגובה לפתיחה חלשה בגובה 2, שמכריז <strong>2NT</strong> כהכרזת Forcing. (לבירור כוח פותח ופיזור). תשובות פותח:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-slate-700">
+                  <li><strong>3♣️:</strong> 6-7 נק', מפוזרות. <strong>3♦️:</strong> 6-7 נק', מרוכזות.</li>
+                  <li><strong>3♥️:</strong> 9-10 נק', מפוזרות. <strong>3♠️:</strong> 9-10 נק', מרוכזות.</li>
+                  <li><strong>3NT:</strong> סדרה סגורה AKQ.</li>
+                </ul>
+              `}
+            ]
+          },
+          {
+            id: "c2_s3",
+            title: "3. משיב לפותח אחרי התערבות",
+            subsections: [
+              { title: "3.1 הכרזה חופשית", content: `
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li><strong>תמיכה במייג'ור:</strong> 6+ נקודות, 3+ קלפים.</li>
+                  <li><strong>סדרה חדשה בגובה 1:</strong> 7+ נק"ג, 5+ קלפים.</li>
+                  <li><strong>סדרה חדשה בגובה 2:</strong> 10+ נק"ג, 5+ קלפים.</li>
+                  <li><strong>NT (מאוזנת+עוצר):</strong> 1NT (7-10), 2NT (11-12), 3NT (13+).</li>
+                </ul>
+              `},
+              { title: "3.2 נגטיב דאבל (Negative Double)", content: `
+                <p class="font-bold text-red-600 mb-1">מחייב: 6+ (גובה 1), 8+ (גובה 2), 10+ (גובה 3).</p>
+                <ul class="list-disc list-inside space-y-2 text-slate-700">
+                  <li><strong>הוכרזו 2 סדרות, אחת מייג'ור:</strong> מראה 4 קלפים במייג'ור השני.</li>
+                  <li><strong>הוכרזו 2 סדרות מיינור:</strong> מראה 4 קלפים באחת/שתי סדרות המייג'ור.</li>
+                  <li><strong>הוכרזו 2 סדרות מייג'ור:</strong> מראה 4 קלפים בשתי סדרות המיינור.</li>
+                </ul>
+              `}
+            ]
+          },
+          {
+            id: "c2_s4",
+            title: "4. הכרזה שניה של הפותח",
+            subsections: [
+              { title: "4.1 תמיכה לאחר התערבות", content: `
+                <ul class="list-disc list-inside space-y-2 text-slate-700">
+                  <li><strong>Support Double:</strong> אם היריב (יד 4) הכריז סדרה ולפותח <strong>בדיוק 3 קלפים</strong> במייג'ור של השותף. (מול TOD, יכריז XX).</li>
+                  <li><strong>תמיכה רגילה:</strong> 4+ קלפים. (12-14 גובה 2, 15-17 גובה 3, 18+ גובה 4 או 3NT במיינור).</li>
+                </ul>
+              `},
+              { title: "4.2 סדרה חדשה (גובה 1/2)", content: `
+                <ul class="list-disc list-inside space-y-2 text-slate-700">
+                  <li><strong>גובה 1:</strong> 4+ קלפים, 12-17 נק"ג.</li>
+                  <li><strong>גובה 2 (ללא רוורס):</strong> 12-17 נק", 5+ בראשונה, 4+ בשניה. <strong>השניה במדרג נמוך מהראשונה</strong>. אין התאמה במייג'ור של משיב. (*חריג 5C+4D: בינוני יפתח D ויכריז C. חלש יפתח C ויחזור על עצמו).</li>
+                </ul>
+              `},
+              { title: "4.3 חזרה על סדרה והכרזת NT (ללא התערבות)", content: `
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li><strong>חזרה על הסדרה המקורית:</strong> 6+ קלפים. (12-14 גובה 2. 15-17 גובה 3. 18+ גובה 4/3NT).</li>
+                  <li><strong>NT:</strong> 1NT (12-14), 2NT (18-19), 3NT (18-21 וחלוקה 6322).</li>
+                </ul>
+              `}
+            ]
+          },
+          {
+            id: "c2_s5",
+            title: "5. רוורס (Reverse) ו-Jump Shift",
+            subsections: [
+              { title: "5.1 רוורס (Reverse)", content: `
+                <p class="font-bold text-purple-700 mb-1">הכרזה המחייבת למשחק מלא!</p>
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li>18-21 נק"ג.</li>
+                  <li>סדרה ראשונה 5+, שניה 4+.</li>
+                  <li><strong>הסדרה השניה במדרג גבוה יותר מהראשונה.</strong></li>
+                  <li>אין התאמה לסדרת השותף.</li>
+                </ul>
+              `},
+              { title: "5.2 Jump Shift", content: `
+                <p class="text-slate-700">שוות ערך לרוורס לחלוטין (18-21, מחייב משחק מלא), כאשר הסדרה השניה <strong>נמוכה במדרג</strong> מהראשונה ולכן מוכרזת בקפיצה.</p>
+              `},
+              { title: "5.3 תשובת המשיב מול רוורס/JS", content: `
+                <p class="text-red-600 font-bold mb-1">המשיב חייב להכריז, אסור פאס!</p>
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li><strong>2/3NT:</strong> יש עוצר בסדרה ה-4, מספיק יד חצי מאוזנת עם 2 דאבלטון.</li>
+                  <li><strong>חזרה על הסדרה הראשונה שלו:</strong> 6+ קלפים (בגובה 3 מחייב 10+).</li>
+                  <li>בלי עוצר ועם תמיכה בראשונה (במיינור), יתמוך בגובה 3.</li>
+                </ul>
+              `}
+            ]
+          },
+          {
+            id: "c2_s6",
+            title: "6. הכרזה שניה של המשיב (ללא התערבות)",
+            subsections: [
+              { title: "6.1 כללי (מול פותח חלש-בינוני)", content: `
+                <ul class="list-disc list-inside space-y-2 text-slate-700">
+                  <li>6-7 נק"ג מבין שאין משחק מלא ויכול להכריז פאס.</li>
+                  <li>2NT – יד מאוזנת & 10-12 נק"ג & עוצר בסדרה שלא הוכרזה.</li>
+                  <li>חזרה על הסדרה הראשונה שלו – 6+ קלפים, הכרזה לפי חוזק (בגובה 3 מחייבת 10+ נק"ג).</li>
+                  <li>אחרת בוחר באחת משתי סדרות הפותח.</li>
+                </ul>
+              `},
+              { title: "6.2 צ'ק-בק סטיימן (Checkback Stayman)", content: `
+                <p class="mb-2 text-slate-700"><strong>מתי:</strong> פותח הכריז 1NT/2NT בהכרזה שניה (אחרי שמשיב הכריז מייג'ור 1). המשיב שואל ב-2♣️ או 3♣️ לבדוק 3 קלפים בתמיכה או 4 במייג'ור השני.</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                  <li><strong>תשובת הפותח:</strong> יראה 4 במייג'ור השני, או 3 בסדרת השותף. (אם גם וגם - יראה את ה-4 קודם). ללא התאמה - יכריז 2/3♦️.</li>
+                </ul>
+              `},
+              { title: "6.3 סדרה רביעית מחייבת (FSF)", content: `
+                <p class="mb-2 text-slate-700">משיב חזק 12+ או 13+, הכרזנו 3 סדרות, יודע שיש מלא אך חסר מידע. <strong>יכריז את הסדרה ה-4 בגובה המינימלי</strong> (מלאכותי) ומאלץ את הפותח לתאר:</p>
+                <ol class="list-decimal list-inside space-y-1 text-slate-700 mb-2">
+                  <li>3 קלפים במייג'ור של המשיב.</li>
+                  <li>עוצר בסדרה הרביעית (יכריז NT).</li>
+                  <li>תאור חלוקה נוספת.</li>
+                </ol>
+              `}
+            ]
+          }
+        ]
       },
       {
-        title: "פתיחה 2♣️",
-        content: (
-          <div className="space-y-3 text-slate-700">
-            <p className="font-bold text-red-600">דגשים: לא עוצרים לפני משחק מלא!!!</p>
-            <ul className="list-disc list-inside mt-1">
-                <li>22+ נק"ג ויד לא מאוזנת.</li>
-                <li>23+ נק"ג ויד מאוזנת.</li>
-                <li>סדרה סגורה (6 קלפים בסדרה &amp; AKQJ או 7 AKQ) עם 9+ לקיחות בטוחות ו-17+ נק"ג.</li>
-            </ul>
-          </div>
-        )
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: "פרק שלישי - אוברקול ומשחק",
-    icon: <PlayCircle className="w-6 h-6" />,
-    sections: []
-  },
-  {
-    id: 3,
-    title: "פרק רביעי - הגנה",
-    icon: <Shield className="w-6 h-6" />,
-    sections: []
-  },
-  {
-    id: 4,
-    title: "פרק חמישי - שונות",
-    icon: <Info className="w-6 h-6" />,
-    sections: []
-  }
-];
-
-export default function App() {
-  const [currentChapterId, setCurrentChapterId] = useState(null);
-  const [openSectionIndex, setOpenSectionIndex] = useState(null);
-
-  const activeChapter = bridgeData.find(c => c.id === currentChapterId);
-
-  return (
-    <div dir="rtl" className="min-h-screen bg-slate-50 font-sans pb-10">
-      <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center">
-          {currentChapterId !== null && (
-            <button onClick={() => setCurrentChapterId(null)} className="p-2 -mr-2 rounded-full hover:bg-emerald-600">
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          )}
-          <h1 className="text-xl font-bold">{currentChapterId === null ? "מדריך ברידג' המלא" : activeChapter.title}</h1>
-        </div>
-      </header>
-      <main className="max-w-2xl mx-auto px-4 mt-6">
-        {currentChapterId === null ? (
-          <div className="space-y-4">
-            {bridgeData.map((chapter) => (
-              <div key={chapter.id} onClick={() => setCurrentChapterId(chapter.id)} className="bg-white p-4 rounded-xl shadow-sm border border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-50 transition">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">{chapter.icon}</div>
-                  <span className="text-lg font-bold">{chapter.title}</span>
+        id: "c3",
+        title: "פרק שלישי - אוברקול ומשחק",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
+        sections: [
+          {
+            id: "c3_s1",
+            title: "1. אוברקול רגיל מול בלנסינג",
+            content: `
+              <div class="table-container bg-white p-2 rounded-lg shadow-sm border border-slate-200">
+                <p class="text-xs mb-2 text-slate-500 font-bold">בלנסינג (יד 4): פתיחה 1 -> פאס -> פאס -> אנחנו.</p>
+                <table class="min-w-full text-sm text-right border-collapse whitespace-nowrap">
+                  <thead class="bg-slate-100">
+                    <tr><th class="p-2 border border-slate-300">הכרזה</th><th class="p-2 border border-slate-300">מצב</th><th class="p-2 border border-slate-300">תנאים</th><th class="p-2 border border-slate-300">תוספת למשיב</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">גובה 1</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">9-17, 5+, 2 מכובדים</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
+                    <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">7-14, 5+ / 4 טובה, 1+ מכובדים</td><td class="p-2 border border-slate-300 text-center font-bold">+2</td></tr>
+                    <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">גובה 2</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">12-17, 5+, 2 מכובדים</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
+                    <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">10-14, 5+ טובה, 1+ מכובדים</td><td class="p-2 border border-slate-300 text-center font-bold">+2</td></tr>
+                    <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">TOD</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">12+, 3+ בכל הסדרות האחרות</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
+                    <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">9+, 3+ בכל הסדרות האחרות</td><td class="p-2 border border-slate-300 text-center font-bold">+3</td></tr>
+                    <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">1NT</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">15-17, מאוזן, עוצר</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
+                    <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">11-14, מאוזן, עוצר</td><td class="p-2 border border-slate-300 text-center font-bold">+4</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            `
+          },
+          {
+            id: "c3_s2",
+            title: "2. משיב לאוברקול ודאבלים",
+            subsections: [
+              { title: "2.1 משיב לאוברקול", content: `
+                <ul class="list-disc list-inside space-y-2">
+                  <li><strong>תמיכה במייג'ור:</strong> 3+ קלפים. 6-9 נק' תמיכה גובה 2, 10+ נק' קיוביד.</li>
+                  <li><strong>מתערב חלש (0-5):</strong> תומך בגובה 3 עם 4 קלפים.</li>
+                  <li><strong>סדרה חדשה:</strong> גובה 1 (9+ נק'), גובה 2 (12+ מול אוברקול 1).</li>
+                </ul>
+              `},
+              { title: "2.2 Takeout Double ו-Big Double", content: `
+                <p class="font-bold">TOD: 12+ נק"ג ואין הכרזה טבעית. תגובות משיב (חייב להכריז!):</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                  <li>חלש 0-7: ארוכה בגובה מינימלי. <span class="text-red-500 font-bold">אסור NT!</span></li>
+                  <li>בינוני 8-11: ארוכה בקפיצה. / 1NT (8-9), 2NT (10-12).</li>
+                  <li>חזק 12+: 5+ במייג'ור לגובה 4, 3NT במאוזנת עם עוצר, אחרת קיוביד.</li>
+                </ul>
+                <p class="mt-2 text-sm bg-purple-50 p-2 rounded"><strong>Big Double (18+):</strong> המשיב עונה ל-Big Double בדיוק כמו ל-TOD עד שהפותח חושף את זה בהכרזה השניה.</p>
+              `}
+            ]
+          },
+          {
+            id: "c3_s3",
+            title: "3. מוסכמת D.O.N.T וסלם",
+            content: `
+              <div class="space-y-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                  <p class="mb-3 font-bold text-blue-800">D.O.N.T (הפרעה ל-1NT של היריב):</p>
+                  <ul class="font-mono text-sm space-y-2 bg-slate-50 p-3 rounded">
+                    <li><strong>X</strong> : סדרה אחת ארוכה (6+) -> שותף שואל 2C מהי.</li>
+                    <li><strong>2♣️/2♦️</strong> : הסדרה המוכרזת + סדרת מייג'ור.</li>
+                    <li><strong>2♥️</strong> : ♥️ + ♠️.</li>
+                    <li><strong>2NT</strong> : שתי סדרות המיינור.</li>
+                  </ul>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                  <p class="font-bold text-yellow-800 mb-2">סלם (Slam) ושאלת אסים (4NT):</p>
+                  <ul class="list-disc list-inside text-sm">
+                    <li>סלם קטן (6NT): 33+ נק'. סלם גדול (7NT): 37+ נק'.</li>
+                    <li>סלם בשליט דורש 5 מתוך 6 כרטיסי מפתח (4 אסים + K,Q שליט).</li>
+                    <li>תשובות ל-4NT: 5C(0/3), 5D(1/4), 5H(2/5), 5S(2/5+מלכה).</li>
+                  </ul>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div>
-            {activeChapter.sections.map((section, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow-sm mb-3">
-                <button onClick={() => setOpenSectionIndex(openSectionIndex === idx ? null : idx)} className="w-full p-4 flex justify-between font-bold">
-                  {section.title}
-                  {openSectionIndex === idx ? <ChevronDown /> : <ChevronRight />}
-                </button>
-                {openSectionIndex === idx && <div className="p-4 border-t border-slate-100">{section.content}</div>}
+            `
+          },
+          {
+            id: "c3_s4",
+            title: "4. הובלות ותכנון משחק",
+            subsections: [
+              { title: "4.1 הובלות (NT ושליט)", content: `
+                <ul class="list-disc list-inside space-y-2">
+                  <li><strong>NT:</strong> עדיפות לסדרת תמיכה או סדרה ארוכה (רביעי מלמעלה). לא בסדרת יריב.</li>
+                  <li><strong>שליט - הובלות טובות:</strong> סדרת שותף, רצף AK, סינגלטון קטן, רצף 2 מכובדים.</li>
+                  <li><strong>שליט - הובלות רעות:</strong> A בלי K, דאבלטון עם תמונה, סדרת שליט.</li>
+                </ul>
+              `},
+              { title: "4.2 תכנון משחק מול שליט", content: `
+                <ol class="list-decimal list-inside space-y-1 text-sm">
+                  <li>הגדרת מטרה ולקיחות בטוחות.</li>
+                  <li>מציאת <strong>יד דומיננטית</strong> (עם יותר שליטים).</li>
+                  <li>ספירת <strong>מפסידים</strong> (ביד הדומיננטית בלבד!).</li>
+                  <li>היפטרות ממפסידים: חיתוך, השלכה, עקיפה.</li>
+                </ol>
+                <div class="mt-2 bg-amber-50 p-2 rounded border border-amber-200">
+                  <span class="font-bold block mb-1">משיכת שליטים:</span>
+                  מומלץ כשיש מספיק לקיחות או ליריבים יש גבוהים שייפלו ביחד. <span class="text-red-600 font-bold">לא למשוך</span> אם צריך את השליטים לחיתוך מפסידים ביד המסייעת.
+                </div>
+              `}
+            ]
+          }
+        ]
+      },
+      {
+        id: "c4",
+        title: "פרק רביעי - הגנה",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+        sections: [
+          {
+            id: "c4_s1",
+            title: "1. משחק היד השנייה והשלישית",
+            subsections: [
+              { title: "1.1 היד השנייה", content: `
+                <ul class="list-disc list-inside space-y-2">
+                  <li><strong>נמוך על נמוך:</strong> כרוז שיחק נמוך -> נשחק נמוך. (אלא אם ניתן לזכות/להפיל).</li>
+                  <li><strong>תמונה מכסה תמונה:</strong> כרוז הוביל תמונה -> נכסה בגבוהה יותר. (לא לכסות אם לדומם רצף מושלם של 4!).</li>
+                </ul>
+              `},
+              { title: "1.2 היד השלישית", content: `
+                <ul class="list-disc list-inside space-y-1">
+                  <li>משחקת את <strong>הקלף הכי גבוה</strong> בסדרת השותף.</li>
+                  <li>רצף גבוהים: נשחק את <strong>הנמוך</strong> מהרצף.</li>
+                  <li>זכייה: נחזיר את הסדרה מהגבוה (או נמוך אם זו סדרה ארוכה שלנו).</li>
+                </ul>
+              `}
+            ]
+          },
+          {
+            id: "c4_s2",
+            title: "2. איתותים (Signals)",
+            subsections: [
+              { title: "2.1 איתות מעודד / לא מעודד", content: `
+                <p class="mb-1 text-sm bg-green-50 p-1">יד 3 מול הובלת שותף. קלפים 2-9.</p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li><strong>גבוה:</strong> מעודד (יש עוד גבוהים/חיתוך). <strong>נמוך:</strong> לא מעודד.</li>
+                  <li class="text-red-500 font-bold">לא לאותת כשיש סיכוי שזה קלף לקיחה!</li>
+                </ul>
+              `},
+              { title: "2.2 איתות ספירה (Count)", content: `
+                <p class="mb-1 text-sm bg-blue-50 p-1">מול הובלות כרוז/דומם. כדי להפריע למעברים.</p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li><strong>גבוה:</strong> מספר זוגי (2,4). <strong>נמוך:</strong> אי-זוגי (1,3).</li>
+                </ul>
+              `},
+              { title: "2.3 העדפת סדרה ושיטת לבנטל", content: `
+                <p class="mb-1 text-sm bg-purple-50 p-1">בהשלכה כשלא משרתים:</p>
+                <ul class="list-disc list-inside space-y-1">
+                  <li>קלף <strong>גבוה</strong> = העדפה לסדרה הגבוהה מביניהן.</li>
+                  <li>קלף <strong>נמוך</strong> = העדפה לסדרה הנמוכה מביניהן.</li>
+                </ul>
+              `}
+            ]
+          }
+        ]
+      },
+      {
+        id: "c5",
+        title: "פרק חמישי - שונות",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+        sections: [
+          {
+            id: "c5_s1",
+            title: "מושגים וחוקים חשובים",
+            content: `
+              <div class="space-y-4 text-slate-700">
+                <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                  <span class="font-bold text-red-600">Lead Directing Double</span>
+                  <p class="text-sm mt-1">דאבל על הכרזה מלאכותית - דורש מהשותף להוביל באותו צבע.</p>
+                </div>
+                <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                  <span class="font-bold text-emerald-600">חוק ה-20 (לפותח)</span>
+                  <p class="text-sm mt-1">סך נק"ג + קלפים ב-2 הסדרות הארוכות &gt;= 20 -> פתח.</p>
+                </div>
+                <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                  <span class="font-bold text-blue-600">כלל סך הלקיחות / 8 ever 9 never</span>
+                  <p class="text-sm mt-1">מספר הקלפים הוא גובה ההכרזה הבטוח. ב-8 קלפים תמיד עקיפה למלכה, ב-9 קלפים על נפילתה.</p>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+            `
+          }
+        ]
+      }
+    ];
+
+    // --- מערכת הניווט ב-Vanilla JS ---
+    let currentView = { page: 'home', chapterId: null, sectionId: null };
+
+    function goBack() {
+      if (currentView.page === 'section') {
+        currentView = { page: 'chapter', chapterId: currentView.chapterId, sectionId: null };
+      } else if (currentView.page === 'chapter') {
+        currentView = { page: 'home', chapterId: null, sectionId: null };
+      }
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function navigateToChapter(chapterId) {
+      currentView = { page: 'chapter', chapterId: chapterId, sectionId: null };
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function navigateToSection(chapterId, sectionId) {
+      currentView = { page: 'section', chapterId: chapterId, sectionId: sectionId };
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderBreadcrumbs() {
+      const bc = document.getElementById('breadcrumbs');
+      if (currentView.page === 'home') {
+        bc.classList.add('hidden');
+      } else {
+        bc.classList.remove('hidden');
+        bc.classList.add('flex');
+        
+        let html = `<span class="cursor-pointer hover:text-white" onclick="currentView={page:'home', chapterId:null, sectionId:null}; render();">ראשי</span>`;
+        
+        if (currentView.chapterId) {
+          const c = bridgeData.find(c => c.id === currentView.chapterId);
+          html += ` <span class="mx-1">/</span> <span class="cursor-pointer hover:text-white truncate" onclick="currentView={page:'chapter', chapterId:'${c.id}', sectionId:null}; render();">${c.title}</span>`;
+          
+          if (currentView.sectionId) {
+             const s = c.sections.find(s => s.id === currentView.sectionId);
+             html += ` <span class="mx-1">/</span> <span class="text-white font-bold truncate max-w-[200px]">${s.title}</span>`;
+          }
+        }
+        bc.innerHTML = html;
+      }
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      const backBtn = document.getElementById('backBtn');
+      const headerTitle = document.getElementById('headerTitle');
+      
+      renderBreadcrumbs();
+
+      if (currentView.page === 'home') {
+        backBtn.classList.add('hidden');
+        headerTitle.innerText = "ברידג' - דף מרכז";
+        
+        let html = `<div class="space-y-4 animate-fade-in">`;
+        bridgeData.forEach(c => {
+          html += `
+            <button onclick="navigateToChapter('${c.id}')" class="w-full mb-3 p-4 bg-white shadow-sm border border-emerald-100 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-all focus:outline-none">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
+                  ${c.icon || ''}
+                </div>
+                <span class="text-lg font-bold text-slate-800">${c.title}</span>
+              </div>
+            </button>
+          `;
+        });
+        html += `</div>`;
+        app.innerHTML = html;
+
+      } else if (currentView.page === 'chapter') {
+        backBtn.classList.remove('hidden');
+        const chapter = bridgeData.find(c => c.id === currentView.chapterId);
+        headerTitle.innerText = chapter.title;
+        
+        let html = `<div class="animate-fade-in-left space-y-3">`;
+        chapter.sections.forEach(s => {
+          html += `
+            <button onclick="navigateToSection('${chapter.id}', '${s.id}')" class="w-full p-4 bg-white shadow-sm border border-slate-200 rounded-xl flex items-center justify-between hover:bg-emerald-50 transition-all border-r-4 border-r-emerald-500 text-right">
+              <span class="font-bold text-slate-800 text-base leading-snug">${s.title}</span>
+            </button>
+          `;
+        });
+        html += `</div>`;
+        app.innerHTML = html;
+
+      } else if (currentView.page === 'section') {
+        backBtn.classList.remove('hidden');
+        const chapter = bridgeData.find(c => c.id === currentView.chapterId);
+        const section = chapter.sections.find(s => s.id === currentView.sectionId);
+        headerTitle.innerText = section.title;
+
+        let html = `<div class="animate-fade-in-left">`;
+
+        if (section.subsections && section.subsections.length > 0) {
+          section.subsections.forEach((sub, idx) => {
+             html += `
+              <details class="mb-3 bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden group">
+                <summary class="p-4 font-bold cursor-pointer hover:bg-slate-50 transition-colors flex justify-between items-center text-slate-800 focus:outline-none">
+                  <span>${sub.title}</span>
+                  <span class="text-emerald-600 transition-transform group-open:rotate-45 text-2xl font-bold">+</span>
+                </summary>
+                <div class="p-4 border-t border-slate-100 bg-slate-50/50 text-sm text-slate-700 leading-relaxed">
+                  ${sub.content}
+                </div>
+              </details>
+             `;
+          });
+        } else if (section.content) {
+          html += `<div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 text-sm text-slate-700 leading-relaxed">${section.content}</div>`;
+        }
+
+        html += `</div>`;
+        app.innerHTML = html;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", render);
+  </script>
+</body>
+</html>
