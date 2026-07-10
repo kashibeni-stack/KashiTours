@@ -1,0 +1,169 @@
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronDown, ChevronRight, BookOpen, Shield, Info, Layers, PlayCircle, Anchor, AlertCircle } from 'lucide-react';
+
+// --- DATA STRUCTURE ---
+const bridgeData = [
+  {
+    id: 0,
+    title: "פרק ראשון - כללי",
+    icon: <BookOpen className="w-6 h-6" />,
+    sections: [
+      {
+        title: "טבלת טווחי ניקוד לפי תפקידים",
+        content: (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-right border-collapse">
+              <thead className="bg-emerald-100">
+                <tr>
+                  <th className="p-2 border border-emerald-200 font-bold">תפקיד</th>
+                  <th className="p-2 border border-emerald-200 font-bold">פותח</th>
+                  <th className="p-2 border border-emerald-200 font-bold">משיב לפותח</th>
+                  <th className="p-2 border border-emerald-200 font-bold">אוברקול</th>
+                  <th className="p-2 border border-emerald-200 font-bold">משיב לאוברקול</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-white">
+                  <td className="p-2 border border-emerald-200 font-bold">ניקוד מינימלי להכרזה:</td>
+                  <td className="p-2 border border-emerald-200">12 נק"ג</td>
+                  <td className="p-2 border border-emerald-200">6 נק"ג</td>
+                  <td className="p-2 border border-emerald-200">9 נק"ג</td>
+                  <td className="p-2 border border-emerald-200">-</td>
+                </tr>
+                <tr className="bg-emerald-50">
+                  <td className="p-2 border border-emerald-200 font-bold">חלש</td>
+                  <td className="p-2 border border-emerald-200">12-14</td>
+                  <td className="p-2 border border-emerald-200">6-9</td>
+                  <td className="p-2 border border-emerald-200">9-11</td>
+                  <td className="p-2 border border-emerald-200">9-11</td>
+                </tr>
+                <tr className="bg-white">
+                  <td className="p-2 border border-emerald-200 font-bold">בינוני</td>
+                  <td className="p-2 border border-emerald-200">15-17</td>
+                  <td className="p-2 border border-emerald-200">10-12</td>
+                  <td className="p-2 border border-emerald-200">12-14</td>
+                  <td className="p-2 border border-emerald-200">12-14</td>
+                </tr>
+                <tr className="bg-emerald-50">
+                  <td className="p-2 border border-emerald-200 font-bold">חזק</td>
+                  <td className="p-2 border border-emerald-200">18+</td>
+                  <td className="p-2 border border-emerald-200">13+</td>
+                  <td className="p-2 border border-emerald-200">15-17</td>
+                  <td className="p-2 border border-emerald-200">15+</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )
+      },
+      {
+        title: "כללים למכרז",
+        content: (
+          <ul className="list-disc list-inside space-y-2 text-slate-700">
+            <li>כל עוד יש סיכוי למשחק מלא, ההכרזה ממשיכה.</li>
+            <li>הכרזה שניה חייבת להגדיר את הניקוד, לא "משקרים" בנקודות.</li>
+            <li>ההכרזה השניה צריכה להראות גם את החלוקה של היד.</li>
+            <li>במידה ולא ניתן להראות חלוקה וגם ניקוד, "נזייף" בחלוקה במיינור.</li>
+          </ul>
+        )
+      }
+    ]
+  },
+  {
+    id: 1,
+    title: "פרק שני - הכרזות",
+    icon: <Layers className="w-6 h-6" />,
+    sections: [
+      {
+        title: "הכרזה ראשונה של הפותח",
+        content: (
+          <ul className="list-disc list-inside space-y-2 text-slate-700">
+            <li><strong>1NT</strong> – יד מאוזנת, 15-17 נק"ג.</li>
+            <li><strong>1 מייג'ור</strong> – 5+ קלפים.</li>
+            <li><strong>סדרת המיינור הארוכה</strong></li>
+            <li><strong>2NT</strong> – 20-22 נק"ג, יד מאוזנת.</li>
+          </ul>
+        )
+      },
+      {
+        title: "פתיחה 2♣️",
+        content: (
+          <div className="space-y-3 text-slate-700">
+            <p className="font-bold text-red-600">דגשים: לא עוצרים לפני משחק מלא!!!</p>
+            <ul className="list-disc list-inside mt-1">
+                <li>22+ נק"ג ויד לא מאוזנת.</li>
+                <li>23+ נק"ג ויד מאוזנת.</li>
+                <li>סדרה סגורה (6 קלפים בסדרה &amp; AKQJ או 7 AKQ) עם 9+ לקיחות בטוחות ו-17+ נק"ג.</li>
+            </ul>
+          </div>
+        )
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "פרק שלישי - אוברקול ומשחק",
+    icon: <PlayCircle className="w-6 h-6" />,
+    sections: []
+  },
+  {
+    id: 3,
+    title: "פרק רביעי - הגנה",
+    icon: <Shield className="w-6 h-6" />,
+    sections: []
+  },
+  {
+    id: 4,
+    title: "פרק חמישי - שונות",
+    icon: <Info className="w-6 h-6" />,
+    sections: []
+  }
+];
+
+export default function App() {
+  const [currentChapterId, setCurrentChapterId] = useState(null);
+  const [openSectionIndex, setOpenSectionIndex] = useState(null);
+
+  const activeChapter = bridgeData.find(c => c.id === currentChapterId);
+
+  return (
+    <div dir="rtl" className="min-h-screen bg-slate-50 font-sans pb-10">
+      <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center">
+          {currentChapterId !== null && (
+            <button onClick={() => setCurrentChapterId(null)} className="p-2 -mr-2 rounded-full hover:bg-emerald-600">
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          )}
+          <h1 className="text-xl font-bold">{currentChapterId === null ? "מדריך ברידג' המלא" : activeChapter.title}</h1>
+        </div>
+      </header>
+      <main className="max-w-2xl mx-auto px-4 mt-6">
+        {currentChapterId === null ? (
+          <div className="space-y-4">
+            {bridgeData.map((chapter) => (
+              <div key={chapter.id} onClick={() => setCurrentChapterId(chapter.id)} className="bg-white p-4 rounded-xl shadow-sm border border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-50 transition">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">{chapter.icon}</div>
+                  <span className="text-lg font-bold">{chapter.title}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>
+            {activeChapter.sections.map((section, idx) => (
+              <div key={idx} className="bg-white rounded-xl shadow-sm mb-3">
+                <button onClick={() => setOpenSectionIndex(openSectionIndex === idx ? null : idx)} className="w-full p-4 flex justify-between font-bold">
+                  {section.title}
+                  {openSectionIndex === idx ? <ChevronDown /> : <ChevronRight />}
+                </button>
+                {openSectionIndex === idx && <div className="p-4 border-t border-slate-100">{section.content}</div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
