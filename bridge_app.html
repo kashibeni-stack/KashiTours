@@ -313,11 +313,11 @@
         ]
       },
       {
-        id: "c3", title: "פרק שלישי - אוברקול ומשחק",
+        id: "c3", title: "פרק שלישי - אוברקול",
         icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
         sections: [
           {
-            id: "c3_s1", title: "1. אוברקול רגיל מול בלנסינג",
+            id: "c3_s1", title: "1. הכרזות אוברקול / בלנסינג",
             content: `
               <div class="table-container bg-white p-2 rounded-lg shadow-sm border border-slate-200">
                 <p class="text-xs mb-2 text-slate-500 font-bold">בלנסינג (יד 4): פתיחה 1 -> פאס -> פאס -> אנחנו.</p>
@@ -332,35 +332,213 @@
                     <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">9+, 3+ בכל הסדרות האחרות</td><td class="p-2 border border-slate-300 text-center font-bold">+3</td></tr>
                     <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">1NT</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">15-17, מאוזן, עוצר</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
                     <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">11-14, מאוזן, עוצר</td><td class="p-2 border border-slate-300 text-center font-bold">+4</td></tr>
+                    <tr class="bg-white"><td class="p-2 border border-slate-300 font-bold" rowspan="2">ביג דאבל</td><td class="p-2 border border-slate-300">רגיל</td><td class="p-2 border border-slate-300">18+ נק"ג</td><td class="p-2 border border-slate-300 text-center">-</td></tr>
+                    <tr class="bg-emerald-50"><td class="p-2 border border-slate-300">בלנסינג</td><td class="p-2 border border-slate-300">15+ נק"ג</td><td class="p-2 border border-slate-300 text-center font-bold">+3</td></tr>
                   </tbody>
                 </table>
               </div>
             `
           },
           {
-            id: "c3_s2", title: "2. משיב לאוברקול ודאבלים",
+            id: "c3_s2", title: "2. הכרזה ראשונה של האוברקול",
             subsections: [
-              { title: "2.1 משיב לאוברקול", content: `
-                <ul class="list-disc list-inside space-y-2"><li><strong>תמיכה במייג'ור:</strong> 3+ קלפים. 6-9 נק' תמיכה גובה 2, 10+ נק' קיוביד.</li><li><strong>מתערב חלש (0-5):</strong> תומך בגובה 3 עם 4 קלפים.</li><li><strong>סדרה חדשה:</strong> גובה 1 (9+ נק'), גובה 2 (12+ מול אוברקול 1).</li></ul>`
+              { title: "2.1 הכרזת 1NT", content: `
+                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                  <li><strong>התנאים להכרזה:</strong> 15-17 נק"ג, עוצר, יד מאוזנת.</li>
+                  <li>תשובת המשיב והמשך הכרזה כמו בפתיחת 1NT.</li>
+                </ul>`
               },
-              { title: "2.2 Takeout Double ו-Big Double", content: `
-                <p class="font-bold">TOD: 12+ נק"ג ואין הכרזה טבעית. תגובות משיב (חייב להכריז!):</p>
-                <ul class="list-disc list-inside mt-2 space-y-1"><li>חלש 0-7: ארוכה בגובה מינימלי. <span class="text-red-500 font-bold">אסור NT!</span></li><li>בינוני 8-11: ארוכה בקפיצה. / 1NT (8-9), 2NT (10-12).</li><li>חזק 12+: 5+ במייג'ור לגובה 4, 3NT במאוזנת עם עוצר, אחרת קיוביד.</li></ul>
-                <p class="mt-2 text-sm bg-purple-50 p-2 rounded"><strong>Big Double (18+):</strong> המשיב עונה ל-Big Double בדיוק כמו ל-TOD עד שהפותח חושף את זה בהכרזה השניה.</p>`
+              { title: "2.2 הכרזת סדרה בגובה 1", content: `
+                <div class="space-y-3 text-slate-700">
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">התנאים להכרזה:</span>
+                    <p class="text-sm">9-17 נק"ג, 5+ קלפים בסדרה, 2 מכובדים.</p>
+                  </div>
+                  <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-2 block">משיב לאוברקול בגובה 1:</span>
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">משיב לאוברקול עם תמיכה במייג'ור של האוברקול:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1 mb-3">
+                      <li>3+ קלפים בסדרה.</li>
+                      <li>חלש 6-9 נק' תמיכה בגובה 2.</li>
+                      <li>10+ נק יכריז קיוביד (במיינור עדיפות להחלפת סידרה).</li>
+                      <li><strong>משיב חלש עם 0-5 נק':</strong> עם 4 קלפים בסדרה יכריז בגובה 3. עם 5 קלפים בסדרה יכריז בגובה 4.</li>
+                    </ul>
+
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">משיב לאוברקול ללא תמיכה במייג'ור של האוברקול יכריז:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>
+                        <strong>סדרה חדשה בגובה 1:</strong> 4+ קלפים בסדרה, 9+ נק"ג.
+                        <div class="mt-2 ml-4 mb-2 p-3 bg-emerald-50/70 rounded border border-emerald-200">
+                          <span class="font-bold text-sm block mb-1 text-emerald-900">הכרזה שניה של האוברקול:</span>
+                          <ul class="list-disc list-inside text-xs space-y-1">
+                            <li>עם תמיכה בסדרת המשיב לאוברקול יתמוך בגובה המתאים.</li>
+                            <li><strong>ללא תמיכה:</strong> 6+ קלפים יחזור על הסדרה בגובה המתאים.</li>
+                            <li>יד מאוזנת ועוצר – NT בגובה המתאים.</li>
+                            <li>יד דו סדרתית, יכריז לפי מספר הנקודות: 15+ נק' יכריז רוורס ביד. אחרת יראה את הסדרה השניה או יחזור על הראשונה.</li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li><strong>סדרה חדשה בגובה 2:</strong> 5+ קלפים בסדרה, 12+ נק"ג.</li>
+                      <li><strong>הכרזת NT (יד מאוזנת + עוצר):</strong> בגובה 1 (9-11 נק"ג), בגובה 2 (12-14 נק"ג), בגובה 3 (15+ נק"ג).</li>
+                    </ul>
+                  </div>
+                </div>`
+              },
+              { title: "2.3 הכרזת סדרה בגובה 2", content: `
+                <div class="space-y-3 text-slate-700">
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">תנאים להכרזה:</span>
+                    <p class="text-sm">5+ קלפים בסדרה, 12-17 נק"ג, 2 מכובדים לפחות.</p>
+                  </div>
+                  <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-2 block">משיב לאוברקול בגובה 2:</span>
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">תמיכה באוברקול:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1 mb-3">
+                      <li><strong>במייג'ור:</strong> 9-11 נק' יתמוך בגובה 3. 12+ נק' יכריז קיוביד. 0-5 נק', 5+ קלפים בסידרה יתמוך בגובה 4.</li>
+                      <li><strong>במיינור (במידה ולא ניתן להכריז סדרת מייג'ור):</strong> 9-11 נק' יתמוך בגובה 3. 12+ נק"ג ללא עוצר – יכריז קיוביד (משחק מלא לא ברור במה). 12+ נק"ג ועוצר – 3NT.</li>
+                    </ul>
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">ללא תמיכה באוברקול:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li><strong>סדרה חדשה בגובה 2:</strong> 9+ נק"ג, 5+ קלפים בסדרה (לא מחייב מכובדים).</li>
+                      <li><strong>סדרה חדשה בגובה 3:</strong> 12+ נק"ג, 5+ קלפים בסדרה, (לא מחייב מכובדים).</li>
+                      <li><strong>NT:</strong> יד מאוזנת + עוצר, 2NT (9-11 נק"ג), 3NT (12+ נק"ג).</li>
+                    </ul>
+                  </div>
+                </div>`
+              },
+              { title: "2.4 Takeout Double (TOD)", content: `
+                <div class="space-y-3 text-slate-700">
+                  <p class="text-sm mb-1"><strong>תנאים להכרזה:</strong> 12+ נק"ג ואין הכרזה טבעית, הכרזת Forcing.</p>
+                  <ul class="list-disc list-inside text-sm space-y-1 mb-2">
+                    <li>הכרזת דאבל ביד השניה מחייבת: 3 קלפים לפחות בכל אחת מהסדרות האחרות.</li>
+                    <li>הכרזת דאבל ביד הרביעית מחייבת: 4 קלפים לפחות ב-2 הסדרות שלא הוכרזו.</li>
+                  </ul>
+                  <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">הכרזת המשיב לאוברקול שהכריז דאבל (אם המשיב לפותח פס חייב להכריז):</span>
+                    <ul class="list-disc list-inside text-sm space-y-1 mb-2">
+                      <li><strong>משיב חלש 0-7 נק"ג:</strong> הסדרה הארוכה בגובה המינימלי, <span class="text-red-500 font-bold">אסור להכריז NT.</span></li>
+                      <li><strong>משיב בינוני 8-11 נק"ג:</strong> סדרה ארוכה בקפיצה.</li>
+                      <li><strong>הכרזת NT:</strong> יד מאוזנת +עוצר, 1NT: 8-9 נק"ג, 2NT: 10-12 נק"ג.</li>
+                    </ul>
+                    <span class="font-bold text-sm block mb-1 mt-2 text-emerald-800">משיב חזק 12+ נק"ג:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>עם 5 + קלפים במייג'ור – יכריז בגובה 4.</li>
+                      <li>עם יד מאוזנת ועוצר –יכריז 3NT.</li>
+                      <li>אחרת יכריז קיוביד.</li>
+                    </ul>
+                  </div>
+                </div>`
+              },
+              { title: "2.5 ביג דאבל", content: `
+                <div class="space-y-3 text-slate-700">
+                  <p class="text-sm mb-1"><strong>תנאים להכרזה:</strong> 18+ נק"ג (כל חלוקה אפשרית). המשיב לא יודע איזה דאבל (TOD / ביג) הכריז השותף, ולכן עונה כמו ל TOD.</p>
+                  <p class="text-sm mb-2 text-purple-700 font-bold">במידה ומכריז הדאבל בהכרזה שניה הכריז סדרה חדשה או NT סימן שביג דאבל.</p>
+                  <div class="bg-purple-50 p-3 rounded border border-purple-200">
+                    <span class="font-bold text-sm block mb-1 text-purple-900">הכרזה שניה של מכריז הדאבל:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li><strong>תמיכה בשותף:</strong> יכריז לפי מספר הנקודות - 16-18 נק' (הכי נמוך שאפשר), 19-21 נק' (בקפיצה).</li>
+                      <li><strong>ללא תמיכה - סדרה חדשה:</strong> 18+ נק"ג, 5+ קלפים.</li>
+                      <li><strong>ללא תמיכה - NT:</strong> יד מאוזנת +עוצר בסדרת הפתיחה יכריז לפי מספר הנקודות שלו - 18-19 נק"ג (ללא קפיצה), 20-22 נק"ג (עם קפיצה).</li>
+                    </ul>
+                  </div>
+                </div>`
+              },
+              { title: "2.6 מוסכמת D.O.N.T (הפרעה ל-1NT)", content: `
+                <div class="space-y-3 text-slate-700">
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">השימוש במוסכמה ע"י המתערב במידה ויש לו:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>יד חד סדרתית 6+ קלפים בסדרה איכותית.</li>
+                      <li>יד דו סדרתית - 2 חמישיות לפחות בסדרות איכותיות.</li>
+                      <li>ניקוד 6+ במצב לא פגיע, 8+ במצב פגיע.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-2 block">הכרזות המתערב (אוברקול):</span>
+                    <ul class="font-mono text-sm space-y-2">
+                      <li><strong>X</strong> : סדרה אחת ארוכה 6+ קלפים.</li>
+                      <li><strong>2♣️ / 2♦️</strong> : הסדרה המוכרזת + סדרת מייג'ור.</li>
+                      <li><strong>2♥️</strong> : ♥️ + ♠️.</li>
+                      <li><strong>2♠️</strong> : 6♠️ ביד חלשה יחסית.</li>
+                      <li><strong>2NT</strong> : יכריז עם סדרות המיינור.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">שאלת המשיב ל D.O.N.T:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>לאחר הכרזת <strong>X</strong> – יכריז 2♣️ (שואל מה הסדרה הארוכה).</li>
+                      <li>לאחר הכרזת <strong>2♣️ / 2♦️ / 2♥️</strong>:
+                        <ul class="list-disc list-inside ml-4 mt-1">
+                          <li>אם יש התאמה (3+ קלפים) יכריז פאס.</li>
+                          <li>אין התאמה ויש לו 2♣️ / 2♦️ - יכריז 2♥️.</li>
+                          <li>אין התאמה ויש לו 2♥️ יכריז 2♠️.</li>
+                        </ul>
+                      </li>
+                      <li>לאחר הכרזת <strong>2NT</strong> – יכריז את סדרת המיינור הארוכה.</li>
+                      <li>לאחר הכרזת <strong>2♠️</strong> יכריז פאס.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-emerald-50/70 p-2 rounded border border-emerald-200">
+                    <p class="text-sm"><strong>מכריז ה D.O.N.T בהכרזתו השנייה:</strong> אחרי שהשותף הכריז סדרה – יכריז פאס אם זו הסדרה שלו, אחרת יכריז את הסדרה שלו.</p>
+                  </div>
+                </div>`
+              },
+              { title: "2.7 התערבות חלשה", content: `
+                <div class="space-y-3 text-slate-700">
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">התנאים להכרזה:</span>
+                    <p class="text-sm mb-1">6-10 נק"ג, 6+ קלפים בסדרה, 2 מכובדים. ההכרזה תהיה בקפיצה:</p>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>6 קלפים הכרזה בגובה 2.</li>
+                      <li>7 קלפים הכרזה בגובה 3.</li>
+                      <li>8 קלפים הכרזה בגובה 4.</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-2 block">תשובת המשיב למתערב בגובה 2:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li><strong>עד 14 נק':</strong> יכריז פאס.</li>
+                      <li><strong>תמיכה בשותף בגובה 3:</strong> 2+ קלפים, 15-17 נק"ג.</li>
+                      <li><strong>תמיכה בשותף בגובה 4:</strong> 2+ קלפים, 18+ נק"ג, Signoff.</li>
+                      <li><strong>הכרזת סידרה חדשה:</strong> 5+ קלפים, 15+ נק"ג, forcing.</li>
+                      <li><strong>הכרזת 2NT:</strong> אין תמיכה בהכרזת האוברקול, אין 5+ קלפים בסדרה אחרת, 15-17 נק"ג + עוצר בסדרת הפתיחה.</li>
+                      <li><strong>הכרזת 3NT:</strong> אותם תנאים כמו 2NT עם 18+ נק"ג.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <span class="font-bold border-b border-emerald-300 pb-1 mb-1 block">תשובת המשיב למתערב בגובה 3:</span>
+                    <p class="text-sm">יכריז עם 16+ נק"ג (אין דרך לבדוק כמה נק' יש לשותף בשל גובה ההכרזה).</p>
+                    
+                    <span class="font-bold text-sm block mb-1 mt-2 text-emerald-800">עדיפויות כשהמתערב הכריז במייג'ור:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1 mb-2">
+                      <li>תמיכה בשותף – קלף אחד בסדרה, 16+ נק', יכריז בגובה 4.</li>
+                      <li>סידרה חדשה – 5+ קלפים, 18+ נק"ג – forcing.</li>
+                    </ul>
+
+                    <span class="font-bold text-sm block mb-1 text-emerald-800">עדיפויות כשהמתערב הכריז במיינור:</span>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                      <li>סדרה חדשה במייג'ור – 5+ קלפים, 18+ נק"ג forcing.</li>
+                      <li>הכרזת 3NT – 2+ קלפים בסדרת השותף, 16+ נק"ג, עוצרים בכל הסדרות האחרות.</li>
+                    </ul>
+                  </div>
+                </div>`
+              },
+              { title: "2.8 התערבות אחרי פתיחה חלשה", content: `
+                <div class="space-y-3 text-slate-700">
+                  <ul class="list-disc list-inside text-sm space-y-2">
+                    <li><strong>יד חזקה יותר מהמינימום:</strong> 15+ נק"ג וסדרה עם 5+ קלפים או 12+ נק"ג, 6+ קלפים, 2 מכובדים.</li>
+                    <li>אם אין 5 קלפים ויש לפחות 3 קלפים בכל אחת מהסדרות האחרות ו-15+ נק"ג – נכריז Takeout double.</li>
+                    <li><strong>הכרזת NT:</strong> 16-18 נק"ג + עוצר + יד מאוזנת.</li>
+                  </ul>
+                  <p class="text-red-600 font-bold bg-red-50 p-2 rounded inline-block">אין הכרזה חלשה אחרי הכרזה חלשה !!!</p>
+                </div>`
               }
             ]
           },
           {
-            id: "c3_s3", title: "3. מוסכמת D.O.N.T",
-            content: `
-              <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <p class="mb-3 font-bold text-blue-800">הפרעה ל-1NT של היריב:</p>
-                <ul class="font-mono text-sm space-y-2 bg-slate-50 p-3 rounded"><li><strong>X</strong> : סדרה אחת ארוכה (6+) -> שותף שואל 2C מהי.</li><li><strong>2♣️/2♦️</strong> : הסדרה המוכרזת + סדרת מייג'ור.</li><li><strong>2♥️</strong> : ♥️ + ♠️.</li><li><strong>2NT</strong> : שתי סדרות המיינור.</li></ul>
-              </div>
-            `
-          },
-          {
-            id: "c3_s4", title: "4. קיוביד מאוחר",
+            id: "c3_s3", title: "3. קיוביד מאוחר",
             content: `
               <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 text-slate-700">
                 <ul class="list-disc list-inside space-y-2 leading-relaxed">
