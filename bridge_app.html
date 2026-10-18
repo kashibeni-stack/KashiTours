@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ברידג' - האפליקציה המלאה</title>
+  <title>קשי ברידג' - VER 2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -22,7 +22,7 @@
         <button id="backBtn" onclick="goBack()" class="hidden p-2 -mr-2 rounded-full hover:bg-emerald-600 transition-colors focus:outline-none" aria-label="חזור">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <h1 id="headerTitle" class="text-xl font-bold tracking-tight">מדריך ברידג' המלא</h1>
+        <h1 id="headerTitle" class="text-xl font-bold tracking-tight">קשי ברידג' - VER 2.0</h1>
       </div>
       <div class="flex items-center gap-2 opacity-90">
         <span class="text-red-200 text-xl">♥️</span><span class="text-slate-100 text-xl">♠️</span>
@@ -241,7 +241,7 @@
                   </div>
                 </div>`
               },
-              { title: "5.2 סדרה רביעית מחייבת (רק אם לא הייתה התערבות)", content: `
+              { title: "5.2 סדרה רביעית מחייבת (FSF)", content: `
                 <div class="space-y-3 text-slate-700">
                   <p class="text-sm"><strong>תנאי סף לשימוש במוסכמה:</strong> משיב חזק 12 או 13+ נק"ג, יודע שיש משחק מלא והכרזנו כבר 3 סדרות שונות. בהכרזתו השנייה למשיב אין דרך להציג את חוסר ידו, חסר לו מידע לצורך קבלת ההחלטה לגבי המשחק הסופי.</p>
                   <p class="text-sm"><strong>הפתרון: הכרזה מלאכותית</strong> – הכרזת בסדרה הרביעית, בגובה הכי נמוך האפשרית. ההכרזה מודיעה לשותף שהמשיב חזק, יש משחק מלא וצריך להחליט מהו.</p>
@@ -813,7 +813,7 @@
 
       if (currentView.page === 'home') {
         backBtn.classList.add('hidden');
-        headerTitle.innerText = "ברידג' - דף מרכז";
+        headerTitle.innerText = "קשי ברידג' - VER 2.0";
         let html = `<div class="space-y-4 animate-fade-in">`;
         bridgeData.forEach(c => {
           html += `
